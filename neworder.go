@@ -75,7 +75,7 @@ func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 	return payload, nil
 }
 
-func SignatureBuilder(payload string) string {
+func SigBuilder(payload string) string {
 
 	h := hmac.New(sha512.New384, []byte(APISECRET))
 	h.Write([]byte(payload))
