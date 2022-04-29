@@ -12,11 +12,6 @@ import (
 	"time"
 )
 
-const (
-	PRODURL = "https://api.gemini.com"
-	SANDURL = "https://api.sandbox.gemini.com"
-)
-
 var (
 	APIKEY    = os.Getenv("apikey")
 	APISECRET = os.Getenv("apisecret")
@@ -54,7 +49,7 @@ type Response struct {
 	OriginalAmount    string   `json:"original_amount"`
 }
 
-func PayloadBuilder(symbol, amount, price string) (string, error) {
+func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
 
@@ -64,7 +59,7 @@ func PayloadBuilder(symbol, amount, price string) (string, error) {
 		Symbol:  symbol,
 		Amount:  amount,
 		Price:   price,
-		Side:    "buy",
+		Side:    side,
 		Type:    "exchange limit",
 		Options: []string{
 			"immediate-or-cancel",
@@ -78,7 +73,6 @@ func PayloadBuilder(symbol, amount, price string) (string, error) {
 	payload := base64.StdEncoding.EncodeToString(encodePayload)
 
 	return payload, nil
-
 }
 
 func SignatureBuilder(payload string) string {
@@ -121,9 +115,8 @@ func PostOrder(baseurl, payload, signature string) (Response, error) {
 			return Response{}, fmt.Errorf("ecountered and error: %v", err)
 		}
 	} else {
-		fmt.Println(resp.StatusCode, "error received from the server")
 		resp.Body.Close()
-		return Response{}, fmt.Errorf("ecountered and error: %v", err)
+		return Response{}, fmt.Errorf("%v: ecountered and error: %v",resp.StatusCode, err)
 	}
 
 	return response, nil

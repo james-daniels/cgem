@@ -1,6 +1,6 @@
-# gemini
+# Gemini
 
-Wanted to use Go to utilize Gemini APIs.
+Wanted to use Go to utilize the Gemini Exchange APIs.
 
 ## Sources:
 https://docs.gemini.com/rest-api/#new-order   
