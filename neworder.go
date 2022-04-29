@@ -68,7 +68,7 @@ func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 
 	encodePayload, err := json.Marshal(p)
 	if err != nil {
-		return "", fmt.Errorf("ecountered and error: %v", err)
+		return "", fmt.Errorf("ecountered an error: %v", err)
 	}
 	payload := base64.StdEncoding.EncodeToString(encodePayload)
 
@@ -92,7 +92,7 @@ func PostOrder(baseurl, payload, signature string) (Response, error) {
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return Response{}, fmt.Errorf("ecountered and error: %v", err)
+		return Response{}, fmt.Errorf("ecountered an error: %v", err)
 	}
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Add("Content-Length", "0")
@@ -104,7 +104,7 @@ func PostOrder(baseurl, payload, signature string) (Response, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return Response{}, fmt.Errorf("ecountered and error: %v", err)
+		return Response{}, fmt.Errorf("ecountered an error: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -112,11 +112,11 @@ func PostOrder(baseurl, payload, signature string) (Response, error) {
 	if resp.StatusCode == 200 {
 		err = json.NewDecoder(resp.Body).Decode(&response)
 		if err != nil {
-			return Response{}, fmt.Errorf("ecountered and error: %v", err)
+			return Response{}, fmt.Errorf("ecountered an error: %v", err)
 		}
 	} else {
 		resp.Body.Close()
-		return Response{}, fmt.Errorf("%v: ecountered and error: %v",resp.StatusCode, err)
+		return Response{}, fmt.Errorf("%v: ecountered an error: %v",resp.StatusCode, err)
 	}
 
 	return response, nil
