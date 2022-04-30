@@ -9,7 +9,7 @@ import (
 
 var symbol string
 var amount string
-var price string
+var offset float64
 var side string
 var env string
 var reoccur int
@@ -17,7 +17,7 @@ var reoccur int
 func init() {
 	flag.StringVar(&symbol, "s", "", "SYMBOL: The symbol for the new order")
 	flag.StringVar(&amount, "a", "", "AMOUNT: Quoted decimal amount to purchase")
-	flag.StringVar(&price, "p", "", "PRICE: Quoted decimal amount to spend per unit")
+	flag.Float64Var(&offset, "o", 0, "PRICE OFFSET: Quoted decimal amount to ADD TO PRICE")
 	flag.StringVar(&side, "t", "buy", "TYPE: buy or sell")
 	flag.StringVar(&env, "e", "sand", "ENVIRONMENT: prod or sand")
 	flag.IntVar(&reoccur, "r", 0, `REOCCUR: frequency in hours of reocurrence (default "0")`)
@@ -38,6 +38,8 @@ func main() {
 	}
 
 	for {
+		price := PriceFeed(symbol, baseurl, offset)
+
 		payload, err := PayloadBuilder(symbol, amount, price, side)
 		if err != nil {
 			fmt.Print(err)
@@ -46,13 +48,13 @@ func main() {
 
 		signature := SigBuilder(payload)
 
-		result, err := PostOrder(baseurl, payload, signature)
+		response, err := NewOrder(baseurl, payload, signature)
 		if err != nil {
 			fmt.Print(err)
 			return
 		}
 
-		log.Printf("%+v\n", result)
+		log.Printf("%+v\n", response)
 
 		if reoccur <= 0 {
 			return

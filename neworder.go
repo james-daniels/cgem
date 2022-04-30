@@ -85,7 +85,7 @@ func SigBuilder(payload string) string {
 	return signature
 }
 
-func PostOrder(baseurl, payload, signature string) (Response, error) {
+func NewOrder(baseurl, payload, signature string) (Response, error) {
 
 	endpoint := "/v1/order/new"
 	url := baseurl + endpoint
