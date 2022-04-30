@@ -20,7 +20,7 @@ func PriceFeed(symbol, baseurl string, offset float64) string {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(fmt.Errorf("ecountered an error: %v", err))
+		fmt.Println(fmt.Errorf("http.get ecountered an error: %v", err))
 		return ""
 	}
 	defer resp.Body.Close()
@@ -29,7 +29,7 @@ func PriceFeed(symbol, baseurl string, offset float64) string {
 	if resp.StatusCode == 200 {
 		err = json.NewDecoder(resp.Body).Decode(&np)
 		if err != nil {
-		fmt.Println(fmt.Errorf("1. ecountered an error: %v", err))
+		fmt.Println(fmt.Errorf("json decoder ecountered an error: %v", err))
 		return ""
 		}
 	}
@@ -42,5 +42,4 @@ func PriceFeed(symbol, baseurl string, offset float64) string {
 
 	price := fmt.Sprint(p + offset)
 	return price
-
 }
