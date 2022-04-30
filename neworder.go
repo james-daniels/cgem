@@ -116,7 +116,7 @@ func PostOrder(baseurl, payload, signature string) (Response, error) {
 		}
 	} else {
 		resp.Body.Close()
-		return Response{}, fmt.Errorf("%v: ecountered an error: %v",resp.StatusCode, err)
+		return Response{}, fmt.Errorf("%v: ecountered an error: %v", resp.StatusCode, err)
 	}
 
 	return response, nil
