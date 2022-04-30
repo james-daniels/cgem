@@ -23,13 +23,13 @@ func init(){
 func main() {
 	flag.Parse()
 
-	var url string
+	var baseurl string
 
 	switch env {
 	case "prod":
-		url = "https://api.gemini.com"
+		baseurl = "https://api.gemini.com"
 	case "sand":
-		url = "https://api.sandbox.gemini.com"
+		baseurl = "https://api.sandbox.gemini.com"
 	}
 
 	//payload, _ := PayloadBuilder("ltcusd", "1", "10.00", "buy")
@@ -37,7 +37,7 @@ func main() {
 
 	signature := SigBuilder(payload)
 
-	result, _ := PostOrder(url, payload, signature)
+	result, _ := PostOrder(baseurl, payload, signature)
 
 	fmt.Printf("%+v\n", result)
 }
