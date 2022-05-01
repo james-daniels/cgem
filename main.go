@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 	"time"
 )
 
@@ -63,7 +62,6 @@ func main() {
 
 func errorHandler(err error) {
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalln(err)
 	}
 }
