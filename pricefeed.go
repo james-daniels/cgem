@@ -14,7 +14,7 @@ type NewPrice struct {
 	PercentageChange24h string `json:"percentChange24h"`
 }
 
-func priceFeed(symbol, baseurl string, offset float64) (string, error) {
+func priceFeed(symbol, baseurl string, offset int) (string, error) {
 	endpoint := "/v1/pricefeed"
 	url := baseurl + endpoint
 
@@ -38,5 +38,5 @@ func priceFeed(symbol, baseurl string, offset float64) (string, error) {
 		}
 	}
 
-	return fmt.Sprint(price + offset), nil
+	return fmt.Sprint(price + float64(offset)), nil
 }

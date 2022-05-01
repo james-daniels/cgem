@@ -9,7 +9,7 @@ import (
 
 var symbol string
 var amount string
-var offset float64
+var offset int
 var side string
 var env string
 var reoccur int
@@ -17,7 +17,7 @@ var reoccur int
 func init() {
 	flag.StringVar(&symbol, "s", "", "SYMBOL: The symbol for the new order")
 	flag.StringVar(&amount, "a", "", "AMOUNT: Quoted decimal amount to purchase")
-	flag.Float64Var(&offset, "o", 0, "PRICE OFFSET: Quoted decimal amount to ADD TO PRICE")
+	flag.IntVar(&offset, "o", 0, "PRICE OFFSET: Quoted decimal amount to ADD TO PRICE")
 	flag.StringVar(&side, "t", "buy", "TYPE: buy or sell")
 	flag.StringVar(&env, "e", "sand", "ENVIRONMENT: prod or sand")
 	flag.IntVar(&reoccur, "r", 0, `REOCCUR: frequency in hours of reocurrence (default "0")`)
@@ -58,7 +58,6 @@ func main() {
 		}
 	}
 }
-
 
 func errorHandler(err error) {
 	if err != nil {
