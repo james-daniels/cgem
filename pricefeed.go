@@ -38,7 +38,10 @@ func priceFeed(symbol, baseurl string, offset int) (string, error) {
 	var price float64
 	for _, v := range np {
 		if v.Pair == strings.ToUpper(symbol) {
-			price, _ = strconv.ParseFloat(v.Price, 64)
+			price, err = strconv.ParseFloat(v.Price, 64)
+			if err != nil {
+				return "", fmt.Errorf("priceFeed: strconv.ParseFloat ecountered an error: %v", err)
+			}
 		}
 	}
 
