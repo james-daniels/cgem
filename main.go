@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"time"
 )
 
@@ -32,27 +33,22 @@ func main() {
 	case "prod":
 		baseurl = "https://api.gemini.com"
 	case "sand":
-		baseurl = "https://api.sandbox.gemini.com"
+		baseurl = "https://api.sandbox.gemini.co"
 	default:
 		fmt.Println(`enter a value of either "prod" or "sand".`)
 	}
 
 	for {
-		price := PriceFeed(symbol, baseurl, offset)
+		price, err := priceFeed(symbol, baseurl, offset)
+		errorHandler(err)
 
-		payload, err := PayloadBuilder(symbol, amount, price, side)
-		if err != nil {
-			fmt.Print(err)
-			return
-		}
+		payload, err := payloadBuilder(symbol, amount, price, side)
+		errorHandler(err)
 
-		signature := SigBuilder(payload)
+		signature := sigBuilder(payload)
 
-		response, err := NewOrder(baseurl, payload, signature)
-		if err != nil {
-			fmt.Print(err)
-			return
-		}
+		response, err := newOrder(baseurl, payload, signature)
+		errorHandler(err)
 
 		log.Printf("%+v\n", response)
 
@@ -61,5 +57,13 @@ func main() {
 		} else {
 			time.Sleep(time.Hour * time.Duration(reoccur))
 		}
+	}
+}
+
+
+func errorHandler(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }

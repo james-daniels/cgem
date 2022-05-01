@@ -49,7 +49,7 @@ type Response struct {
 	OriginalAmount    string   `json:"original_amount"`
 }
 
-func PayloadBuilder(symbol, amount, price, side string) (string, error) {
+func payloadBuilder(symbol, amount, price, side string) (string, error) {
 
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
 
@@ -68,14 +68,14 @@ func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 
 	encodePayload, err := json.Marshal(p)
 	if err != nil {
-		return "", fmt.Errorf("encodePayload ecountered an error: %v", err)
+		return "", fmt.Errorf("payloadBuilder: encodePayload ecountered an error: %v", err)
 	}
 	payload := base64.StdEncoding.EncodeToString(encodePayload)
 
 	return payload, nil
 }
 
-func SigBuilder(payload string) string {
+func sigBuilder(payload string) string {
 
 	h := hmac.New(sha512.New384, []byte(APISECRET))
 	h.Write([]byte(payload))
@@ -85,14 +85,14 @@ func SigBuilder(payload string) string {
 	return signature
 }
 
-func NewOrder(baseurl, payload, signature string) (Response, error) {
+func newOrder(baseurl, payload, signature string) (Response, error) {
 
 	endpoint := "/v1/order/new"
 	url := baseurl + endpoint
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return Response{}, fmt.Errorf("newRequest ecountered an error: %v", err)
+		return Response{}, fmt.Errorf("newOrder: http.NewRequest ecountered an error: %v", err)
 	}
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Add("Content-Length", "0")
@@ -104,7 +104,7 @@ func NewOrder(baseurl, payload, signature string) (Response, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return Response{}, fmt.Errorf("http.client ecountered an error: %v", err)
+		return Response{}, fmt.Errorf("newOrder: http.Client ecountered an error: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -112,11 +112,11 @@ func NewOrder(baseurl, payload, signature string) (Response, error) {
 	if resp.StatusCode == 200 {
 		err = json.NewDecoder(resp.Body).Decode(&response)
 		if err != nil {
-			return Response{}, fmt.Errorf("json.NewDecoder ecountered an error: %v", err)
+			return Response{}, fmt.Errorf("newOrder: json.NewDecoder ecountered an error: %v", err)
 		}
 	} else {
 		resp.Body.Close()
-		return Response{}, fmt.Errorf("%v: ecountered an error: %v", resp.StatusCode, err)
+		return Response{}, fmt.Errorf("newOrder: %v: ecountered an error: %v", resp.StatusCode, err)
 	}
 
 	return response, nil

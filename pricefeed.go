@@ -11,17 +11,16 @@ import (
 type NewPrice struct {
 	Pair string `json:"pair"`
 	Price string `json:"price"`
-	PercentageChange24 string `json:"percentChange24h"`
+	PercentageChange24h string `json:"percentChange24h"`
 }
 
-func PriceFeed(symbol, baseurl string, offset float64) string {
+func priceFeed(symbol, baseurl string, offset float64) (string, error) {
 	endpoint := "/v1/pricefeed"
 	url := baseurl + endpoint
 
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(fmt.Errorf("http.get ecountered an error: %v", err))
-		return ""
+		return "", fmt.Errorf("priceFeed: http.get ecountered an error: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -29,17 +28,15 @@ func PriceFeed(symbol, baseurl string, offset float64) string {
 	if resp.StatusCode == 200 {
 		err = json.NewDecoder(resp.Body).Decode(&np)
 		if err != nil {
-		fmt.Println(fmt.Errorf("json decoder ecountered an error: %v", err))
-		return ""
+			return "", fmt.Errorf("priceFeed: json decoder ecountered an error: %v", err)
 		}
 	}
-	var p float64
+	var price float64
 	for _, v := range np {
 		if v.Pair == strings.ToUpper(symbol) {
-			p, _ = strconv.ParseFloat(v.Price, 64)
+			price, _ = strconv.ParseFloat(v.Price, 64)
 		}
 	}
 
-	price := fmt.Sprint(p + offset)
-	return price
+	return fmt.Sprint(price + offset), nil
 }
