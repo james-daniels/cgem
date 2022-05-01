@@ -33,7 +33,7 @@ func main() {
 	case "prod":
 		baseurl = "https://api.gemini.com"
 	case "sand":
-		baseurl = "https://api.sandbox.gemini.co"
+		baseurl = "https://api.sandbox.gemini.com"
 	default:
 		fmt.Println(`enter a value of either "prod" or "sand".`)
 	}
