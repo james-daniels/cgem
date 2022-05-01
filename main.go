@@ -15,10 +15,10 @@ var env string
 var reoccur int
 
 func init() {
-	flag.StringVar(&symbol, "s", "", "SYMBOL: The symbol for the new order")
-	flag.StringVar(&amount, "a", "", "AMOUNT: Quoted decimal amount to purchase")
-	flag.IntVar(&offset, "o", 0, "PRICE OFFSET: Quoted decimal amount to ADD TO PRICE")
-	flag.StringVar(&side, "t", "buy", "TYPE: buy or sell")
+	flag.StringVar(&symbol, "s", "", "SYMBOL: symbol for the new order")
+	flag.StringVar(&amount, "a", "", "AMOUNT: amount to purchase")
+	flag.IntVar(&offset, "o", 0, `PRICE OFFSET: amount to ADD TO PRICE (default "0")`)
+	flag.StringVar(&side, "t", "buy", "SIDE TYPE: buy or sell")
 	flag.StringVar(&env, "e", "sand", "ENVIRONMENT: prod or sand")
 	flag.IntVar(&reoccur, "r", 0, `REOCCUR: frequency in hours of reocurrence (default "0")`)
 }
