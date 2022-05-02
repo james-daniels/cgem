@@ -12,15 +12,15 @@ var amount string
 var offset int
 var side string
 var env string
-var reoccur int
+var repeat int
 
 func init() {
 	flag.StringVar(&symbol, "s", "", "SYMBOL: symbol for the new order")
 	flag.StringVar(&amount, "a", "", "AMOUNT: amount to purchase")
-	flag.IntVar(&offset, "o", 0, `PRICE OFFSET: amount to ADD TO PRICE (default "0")`)
+	flag.IntVar(&offset, "o", 0, `OFFSET: amount to ADD TO PRICE (default "0")`)
 	flag.StringVar(&side, "t", "buy", "SIDE TYPE: buy or sell")
 	flag.StringVar(&env, "e", "sand", "ENVIRONMENT: prod or sand")
-	flag.IntVar(&reoccur, "r", 0, `REOCCUR: frequency in hours of reocurrence (default "0")`)
+	flag.IntVar(&repeat, "r", 0, `REPEAT: frequency in hours to repeat (default "0")`)
 }
 
 func main() {
@@ -51,10 +51,11 @@ func main() {
 
 		log.Printf("%+v\n", response)
 
-		if reoccur <= 0 {
+		if repeat <= 0 {
 			return
 		} else {
-			time.Sleep(time.Hour * time.Duration(reoccur))
+			fmt.Println()
+			time.Sleep(time.Hour * time.Duration(repeat))
 		}
 	}
 }
