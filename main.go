@@ -39,15 +39,15 @@ func main() {
 
 	for {
 		price, err := priceFeed(symbol, baseurl, offset)
-		errorHandler(err)
+		errHandler(err)
 
 		payload, err := payloadBuilder(symbol, amount, price, side)
-		errorHandler(err)
+		errHandler(err)
 
 		signature := sigBuilder(payload)
 
 		response, err := newOrder(baseurl, payload, signature)
-		errorHandler(err)
+		errHandler(err)
 
 		log.Printf("%+v\n", response)
 
@@ -60,7 +60,7 @@ func main() {
 	}
 }
 
-func errorHandler(err error) {
+func errHandler(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
