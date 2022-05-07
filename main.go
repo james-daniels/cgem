@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"time"
 
 	"gopkg.in/ini.v1"
 )
@@ -15,7 +14,7 @@ var (
 	offset int
 	side   string
 	env    string
-	repeat int
+	repeat bool
 )
 
 func init() {
@@ -24,6 +23,10 @@ func init() {
 		log.Fatalf("Failed to read file: %v", err)
 	}
 	env = cfg.Section("").Key("environment").String()
+	repeat, err = cfg.Section("recurrence").Key("repeat").Bool()
+	if err != nil {
+		log.Fatalf("Failed to read parameter: %v", err)
+	}
 }
 
 func init() {
@@ -35,8 +38,6 @@ func init() {
 	flag.IntVar(&offset, "offset", 0, `OFFSET: amount to ADD TO PRICE (default "0")`)
 	flag.StringVar(&side, "S", "buy", "SIDE TYPE: buy or sell")
 	flag.StringVar(&side, "side", "buy", "SIDE TYPE: buy or sell")
-	flag.IntVar(&repeat, "r", 0, `REPEAT: frequency in hours to repeat (default "0")`)
-	flag.IntVar(&repeat, "repeat", 0, `REPEAT: frequency in hours to repeat (default "0")`)
 }
 
 func main() {
@@ -50,34 +51,13 @@ func main() {
 	case "sandbox":
 		baseurl = "https://api.sandbox.gemini.com"
 	default:
-		fmt.Println(`enter a value of either "prod" or "sand".`)
+		fmt.Println(`enter a value of either "production" or "sandbox".`)
 	}
 
-	for {
-		price, err := priceFeed(symbol, baseurl, offset)
-		errHandler(err)
-
-		payload, err := payloadBuilder(symbol, amount, price, side)
-		errHandler(err)
-
-		signature := sigBuilder(payload)
-
-		response, err := newOrder(baseurl, payload, signature)
-		errHandler(err)
-
-		log.Printf("%+v\n", response)
-
-		if repeat <= 0 {
-			return
-		} else {
-			fmt.Println()
-			time.Sleep(time.Hour * time.Duration(repeat))
-		}
-	}
-}
-
-func errHandler(err error) {
-	if err != nil {
-		log.Fatalln(err)
+	switch repeat {
+	case true:
+		MultiInst(baseurl)
+	default:
+		OneInst(baseurl)
 	}
 }
