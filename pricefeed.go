@@ -9,8 +9,8 @@ import (
 )
 
 type NewPrice struct {
-	Pair string `json:"pair"`
-	Price string `json:"price"`
+	Pair                string `json:"pair"`
+	Price               string `json:"price"`
 	PercentageChange24h string `json:"percentChange24h"`
 }
 

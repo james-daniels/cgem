@@ -7,15 +7,26 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	"os"
 	"time"
+
+	"gopkg.in/ini.v1"
 )
 
 var (
-	APIKEY    = os.Getenv("apikey")
-	APISECRET = os.Getenv("apisecret")
+	apikey    string
+	apisecret string
 )
+
+func init() {
+	cfg, err := ini.Load("config.ini")
+	if err != nil {
+		log.Fatalf("Failed to read file: %v", err)
+	}
+	apikey = cfg.Section("credentials").Key("apikey").String()
+	apisecret = cfg.Section("credentials").Key("apisecret").String()
+}
 
 type NewPayload struct {
 	Request string   `json:"request"`
@@ -77,7 +88,7 @@ func payloadBuilder(symbol, amount, price, side string) (string, error) {
 
 func sigBuilder(payload string) string {
 
-	h := hmac.New(sha512.New384, []byte(APISECRET))
+	h := hmac.New(sha512.New384, []byte(apisecret))
 	h.Write([]byte(payload))
 
 	signature := hex.EncodeToString(h.Sum(nil))
@@ -96,7 +107,7 @@ func newOrder(baseurl, payload, signature string) (Response, error) {
 	}
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Add("Content-Length", "0")
-	req.Header.Add("X-GEMINI-APIKEY", APIKEY)
+	req.Header.Add("X-GEMINI-APIKEY", apikey)
 	req.Header.Add("X-GEMINI-PAYLOAD", payload)
 	req.Header.Add("X-GEMINI-SIGNATURE", signature)
 	req.Header.Add("Cache-Control", "no-cache")

@@ -5,14 +5,26 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	"gopkg.in/ini.v1"
 )
 
-var symbol string
-var amount string
-var offset int
-var side string
-var env string
-var repeat int
+var (
+	symbol string
+	amount string
+	offset int
+	side   string
+	env    string
+	repeat int
+)
+
+func init() {
+	cfg, err := ini.Load("config.ini")
+	if err != nil {
+		log.Fatalf("Failed to read file: %v", err)
+	}
+	env = cfg.Section("").Key("environment").String()
+}
 
 func init() {
 	flag.StringVar(&symbol, "s", "", "SYMBOL: symbol for the new order")
@@ -23,8 +35,6 @@ func init() {
 	flag.IntVar(&offset, "offset", 0, `OFFSET: amount to ADD TO PRICE (default "0")`)
 	flag.StringVar(&side, "S", "buy", "SIDE TYPE: buy or sell")
 	flag.StringVar(&side, "side", "buy", "SIDE TYPE: buy or sell")
-	flag.StringVar(&env, "e", "sand", "ENVIRONMENT: prod or sand")
-	flag.StringVar(&env, "environment", "sand", "ENVIRONMENT: prod or sand")
 	flag.IntVar(&repeat, "r", 0, `REPEAT: frequency in hours to repeat (default "0")`)
 	flag.IntVar(&repeat, "repeat", 0, `REPEAT: frequency in hours to repeat (default "0")`)
 }
@@ -35,9 +45,9 @@ func main() {
 	var baseurl string
 
 	switch env {
-	case "prod":
+	case "production":
 		baseurl = "https://api.gemini.com"
-	case "sand":
+	case "sandbox":
 		baseurl = "https://api.sandbox.gemini.com"
 	default:
 		fmt.Println(`enter a value of either "prod" or "sand".`)
