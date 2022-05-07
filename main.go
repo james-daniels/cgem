@@ -15,6 +15,7 @@ var (
 	side   string
 	env    string
 	repeat bool
+	freq   int
 )
 
 func init() {
@@ -23,7 +24,12 @@ func init() {
 		log.Fatalf("Failed to read file: %v", err)
 	}
 	env = cfg.Section("").Key("environment").String()
+
 	repeat, err = cfg.Section("recurrence").Key("repeat").Bool()
+	if err != nil {
+		log.Fatalf("Failed to read parameter: %v", err)
+	}
+	freq, err = cfg.Section("recurrence").Key("frequency").Int()
 	if err != nil {
 		log.Fatalf("Failed to read parameter: %v", err)
 	}
@@ -56,7 +62,7 @@ func main() {
 
 	switch repeat {
 	case true:
-		MultiInst(baseurl)
+		MultiInst(baseurl, freq)
 	default:
 		OneInst(baseurl)
 	}
