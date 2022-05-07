@@ -16,11 +16,17 @@ var repeat int
 
 func init() {
 	flag.StringVar(&symbol, "s", "", "SYMBOL: symbol for the new order")
+	flag.StringVar(&symbol, "symbol", "", "SYMBOL: symbol for the new order")
 	flag.StringVar(&amount, "a", "", "AMOUNT: amount to purchase")
+	flag.StringVar(&amount, "amount", "", "AMOUNT: amount to purchase")
 	flag.IntVar(&offset, "o", 0, `OFFSET: amount to ADD TO PRICE (default "0")`)
-	flag.StringVar(&side, "t", "buy", "SIDE TYPE: buy or sell")
+	flag.IntVar(&offset, "offset", 0, `OFFSET: amount to ADD TO PRICE (default "0")`)
+	flag.StringVar(&side, "S", "buy", "SIDE TYPE: buy or sell")
+	flag.StringVar(&side, "side", "buy", "SIDE TYPE: buy or sell")
 	flag.StringVar(&env, "e", "sand", "ENVIRONMENT: prod or sand")
+	flag.StringVar(&env, "environment", "sand", "ENVIRONMENT: prod or sand")
 	flag.IntVar(&repeat, "r", 0, `REPEAT: frequency in hours to repeat (default "0")`)
+	flag.IntVar(&repeat, "repeat", 0, `REPEAT: frequency in hours to repeat (default "0")`)
 }
 
 func main() {
