@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func OneInst(baseurl string, pretty bool) {
+func oneInst(baseurl string, pretty bool) {
 
 	price, err := PriceFeed(symbol, baseurl, offset)
 	errHandler(err)
@@ -25,7 +25,7 @@ func OneInst(baseurl string, pretty bool) {
 	}
 }
 
-func MultiInst(baseurl string, freq int) {
+func multiInst(baseurl string, freq int) {
 
 	if freq <= 0 {
 		log.Fatalln("enter frequency value greater than 0")
