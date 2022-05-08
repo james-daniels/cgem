@@ -137,7 +137,7 @@ func NewOrder(baseurl, payload, signature string) (Response, error) {
 
 func MakePretty(r Response) {
 
-	respTemplate := `
+respTemplate := `
 OrderID:		{{.OrderID}}
 ID:			{{.ID}}
 Symbol:			{{.Symbol}}
