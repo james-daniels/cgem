@@ -75,29 +75,3 @@ func errHandler(err error) {
 		log.Fatalln(err)
 	}
 }
-
-// func MakePretty(r Response) {
-
-// respTemplate :=`
-// OrderID:		{{.OrderID}}
-// ID:			{{.ID}}
-// Symbol:			{{.Symbol}}
-// Exchange:		{{.Exchange}}
-// AvgExecutionPrice:	{{.AvgExecutionPrice}}
-// Side:			{{.Side}}
-// Type:			{{.Type}}
-// Timestamp:		{{.Timestamp}}
-// Timestampms:		{{.Timestampms}}
-// IsLive:			{{.IsLive}}
-// IsCancelled:		{{.IsCancelled}}
-// IsHidden:		{{.IsHidden}}
-// WasForced:		{{.WasForced}}
-// ExecutedAmount:		{{.ExecutedAmount}}
-// Options:		{{.Options}}
-// StopPrice:		{{.StopPrice}}
-// Price:			{{.Price}}
-// OriginalAmount:		{{.OriginalAmount}}
-// `
-// 	t := template.Must(template.New("respTemplate").Parse(respTemplate))
-// 	t.Execute(os.Stdout, r)
-// }
