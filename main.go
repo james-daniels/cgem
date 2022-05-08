@@ -71,8 +71,8 @@ func main() {
 
 	switch repeat {
 	case true:
-		MultiInst(baseurl, freq)
+		multiInst(baseurl, freq)
 	default:
-		OneInst(baseurl, pretty)
+		oneInst(baseurl, pretty)
 	}
 }
