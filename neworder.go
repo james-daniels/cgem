@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"text/template"
 	"time"
 
 	"gopkg.in/ini.v1"
@@ -60,7 +62,7 @@ type Response struct {
 	OriginalAmount    string   `json:"original_amount"`
 }
 
-func payloadBuilder(symbol, amount, price, side string) (string, error) {
+func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
 
@@ -86,7 +88,7 @@ func payloadBuilder(symbol, amount, price, side string) (string, error) {
 	return payload, nil
 }
 
-func sigBuilder(payload string) string {
+func SigBuilder(payload string) string {
 
 	h := hmac.New(sha512.New384, []byte(apisecret))
 	h.Write([]byte(payload))
@@ -96,7 +98,7 @@ func sigBuilder(payload string) string {
 	return signature
 }
 
-func newOrder(baseurl, payload, signature string) (Response, error) {
+func NewOrder(baseurl, payload, signature string) (Response, error) {
 
 	endpoint := "/v1/order/new"
 	url := baseurl + endpoint
@@ -131,4 +133,30 @@ func newOrder(baseurl, payload, signature string) (Response, error) {
 	}
 
 	return response, nil
+}
+
+func MakePretty(r Response) {
+
+	respTemplate := `
+OrderID:		{{.OrderID}}
+ID:			{{.ID}}
+Symbol:			{{.Symbol}}
+Exchange:		{{.Exchange}}
+AvgExecutionPrice:	{{.AvgExecutionPrice}}
+Side:			{{.Side}}
+Type:			{{.Type}}
+Timestamp:		{{.Timestamp}}
+Timestampms:		{{.Timestampms}}
+IsLive:			{{.IsLive}}
+IsCancelled:		{{.IsCancelled}}
+IsHidden:		{{.IsHidden}}
+WasForced:		{{.WasForced}}
+ExecutedAmount:		{{.ExecutedAmount}}
+Options:		{{.Options}}
+StopPrice:		{{.StopPrice}}
+Price:			{{.Price}}
+OriginalAmount:		{{.OriginalAmount}}
+`
+	t := template.Must(template.New("respTemplate").Parse(respTemplate))
+	t.Execute(os.Stdout, r)
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+
 	"time"
 
 	"gopkg.in/ini.v1"
@@ -26,21 +26,21 @@ func init() {
 
 func OneInst(baseurl string) {
 
-	price, err := priceFeed(symbol, baseurl, offset)
+	price, err := PriceFeed(symbol, baseurl, offset)
 	errHandler(err)
 
-	payload, err := payloadBuilder(symbol, amount, price, side)
+	payload, err := PayloadBuilder(symbol, amount, price, side)
 	errHandler(err)
 
-	signature := sigBuilder(payload)
+	signature := SigBuilder(payload)
 
-	response, err := newOrder(baseurl, payload, signature)
+	response, err := NewOrder(baseurl, payload, signature)
 	errHandler(err)
 
 	if pretty {
-		fmt.Println(Pretty(response))
+		MakePretty(response)
 	} else {
-		fmt.Printf("%+v\n", response)
+		log.Printf("%+v\n", response)
 	}
 }
 
@@ -52,15 +52,15 @@ func MultiInst(baseurl string, freq int) {
 	} else {
 
 		for {
-			price, err := priceFeed(symbol, baseurl, offset)
+			price, err := PriceFeed(symbol, baseurl, offset)
 			errHandler(err)
 
-			payload, err := payloadBuilder(symbol, amount, price, side)
+			payload, err := PayloadBuilder(symbol, amount, price, side)
 			errHandler(err)
 
-			signature := sigBuilder(payload)
+			signature := SigBuilder(payload)
 
-			response, err := newOrder(baseurl, payload, signature)
+			response, err := NewOrder(baseurl, payload, signature)
 			errHandler(err)
 
 			log.Printf("%+v\n\n", response)
@@ -76,31 +76,28 @@ func errHandler(err error) {
 	}
 }
 
-func Pretty(r Response) string {
-	resp := fmt.Sprintf(`
-	OrderID:		%v
-	ID:			%v
-	Symbol:			%v
-	Exchange:		%v
-	AvgExecutionPrice:	%v
-	Side:			%v
-	Type:			%v
-	Timestamp:		%v
-	Timestampms:		%v
-	IsLive:			%v
-	IsCancelled:		%v
-	IsHidden:		%v
-	WasForced:		%v
-	ExecutedAmount:		%v
-	Options:		%v
-	StopPrice:		%v
-	Price:			%v
-	OriginalAmount:		%v
-	`, r.OrderID, r.ID, r.Symbol, r.Exchange,
-		r.AvgExecutionPrice, r.Side, r.Type, r.Timestamp,
-		r.Timestampms, r.IsLive, r.IsCancelled, r.IsHidden,
-		r.WasForced, r.ExecutedAmount, r.Options, r.StopPrice,
-		r.Price, r.OriginalAmount)
+// func MakePretty(r Response) {
 
-	return resp
-}
+// respTemplate :=`
+// OrderID:		{{.OrderID}}
+// ID:			{{.ID}}
+// Symbol:			{{.Symbol}}
+// Exchange:		{{.Exchange}}
+// AvgExecutionPrice:	{{.AvgExecutionPrice}}
+// Side:			{{.Side}}
+// Type:			{{.Type}}
+// Timestamp:		{{.Timestamp}}
+// Timestampms:		{{.Timestampms}}
+// IsLive:			{{.IsLive}}
+// IsCancelled:		{{.IsCancelled}}
+// IsHidden:		{{.IsHidden}}
+// WasForced:		{{.WasForced}}
+// ExecutedAmount:		{{.ExecutedAmount}}
+// Options:		{{.Options}}
+// StopPrice:		{{.StopPrice}}
+// Price:			{{.Price}}
+// OriginalAmount:		{{.OriginalAmount}}
+// `
+// 	t := template.Must(template.New("respTemplate").Parse(respTemplate))
+// 	t.Execute(os.Stdout, r)
+// }
