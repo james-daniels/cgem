@@ -9,13 +9,16 @@ import (
 )
 
 var (
-	symbol string
-	amount string
-	offset int
-	side   string
-	env    string
-	repeat bool
-	freq   int
+	symbol    string
+	amount    string
+	offset    int
+	side      string
+	env       string
+	repeat    bool
+	freq      int
+	pretty    bool
+	apikey    string
+	apisecret string
 )
 
 func init() {
@@ -24,7 +27,13 @@ func init() {
 		log.Fatalf("Failed to read file: %v", err)
 	}
 	env = cfg.Section("").Key("environment").String()
+	apikey = cfg.Section("credentials").Key("apikey").String()
+	apisecret = cfg.Section("credentials").Key("apisecret").String()
 
+	pretty, err = cfg.Section("").Key("pretty").Bool()
+	if err != nil {
+		log.Fatalf("Failed to read parameter: %v", err)
+	}
 	repeat, err = cfg.Section("recurrence").Key("repeat").Bool()
 	if err != nil {
 		log.Fatalf("Failed to read parameter: %v", err)
@@ -64,6 +73,6 @@ func main() {
 	case true:
 		MultiInst(baseurl, freq)
 	default:
-		OneInst(baseurl)
+		OneInst(baseurl, pretty)
 	}
 }

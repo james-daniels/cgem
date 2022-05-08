@@ -2,29 +2,10 @@ package main
 
 import (
 	"log"
-
 	"time"
-
-	"gopkg.in/ini.v1"
 )
 
-var (
-	pretty bool
-)
-
-func init() {
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		log.Fatalf("Failed to read file: %v", err)
-	}
-
-	pretty, err = cfg.Section("").Key("pretty").Bool()
-	if err != nil {
-		log.Fatalf("Failed to read parameter: %v", err)
-	}
-}
-
-func OneInst(baseurl string) {
+func OneInst(baseurl string, pretty bool) {
 
 	price, err := PriceFeed(symbol, baseurl, offset)
 	errHandler(err)
@@ -32,9 +13,9 @@ func OneInst(baseurl string) {
 	payload, err := PayloadBuilder(symbol, amount, price, side)
 	errHandler(err)
 
-	signature := SigBuilder(payload)
+	signature := SigBuilder(payload, apisecret)
 
-	response, err := NewOrder(baseurl, payload, signature)
+	response, err := NewOrder(baseurl, apikey, payload, signature)
 	errHandler(err)
 
 	if pretty {
@@ -58,9 +39,9 @@ func MultiInst(baseurl string, freq int) {
 			payload, err := PayloadBuilder(symbol, amount, price, side)
 			errHandler(err)
 
-			signature := SigBuilder(payload)
+			signature := SigBuilder(payload, apisecret)
 
-			response, err := NewOrder(baseurl, payload, signature)
+			response, err := NewOrder(baseurl, apikey, payload, signature)
 			errHandler(err)
 
 			log.Printf("%+v\n\n", response)
