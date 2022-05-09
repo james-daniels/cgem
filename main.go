@@ -2,47 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"log"
-
-	"gopkg.in/ini.v1"
 )
-
-var (
-	symbol    string
-	amount    string
-	offset    int
-	side      string
-	env       string
-	repeat    bool
-	freq      int
-	pretty    bool
-	apikey    string
-	apisecret string
-)
-
-func init() {
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		log.Fatalf("Failed to read file: %v", err)
-	}
-	env = cfg.Section("").Key("environment").String()
-	apikey = cfg.Section("credentials").Key("apikey").String()
-	apisecret = cfg.Section("credentials").Key("apisecret").String()
-
-	pretty, err = cfg.Section("").Key("pretty").Bool()
-	if err != nil {
-		log.Fatalf("Failed to read parameter: %v", err)
-	}
-	repeat, err = cfg.Section("recurrence").Key("repeat").Bool()
-	if err != nil {
-		log.Fatalf("Failed to read parameter: %v", err)
-	}
-	freq, err = cfg.Section("recurrence").Key("frequency").Int()
-	if err != nil {
-		log.Fatalf("Failed to read parameter: %v", err)
-	}
-}
 
 func init() {
 	flag.StringVar(&symbol, "s", "", "SYMBOL: symbol for the new order")
@@ -58,21 +18,10 @@ func init() {
 func main() {
 	flag.Parse()
 
-	var baseurl string
-
-	switch env {
-	case "production":
-		baseurl = "https://api.gemini.com"
-	case "sandbox":
-		baseurl = "https://api.sandbox.gemini.com"
-	default:
-		fmt.Println(`enter a value of either "production" or "sandbox".`)
-	}
-
 	switch repeat {
 	case true:
-		multiInst(baseurl, freq)
+		multiInst(getEnv(env))
 	default:
-		oneInst(baseurl, pretty)
+		oneInst(getEnv(env))
 	}
 }
