@@ -1,4 +1,4 @@
-package main
+package control
 
 import (
 	"crypto/hmac"
@@ -15,10 +15,10 @@ import (
 )
 
 const (
-	NEWORDERENDPOINT = "/v1/order/new"
+	newOrderEndpoint = "/v1/order/new"
 )
 
-type NewPayload struct {
+type newPayload struct {
 	Request string   `json:"request"`
 	Nonce   string   `json:"nonce"`
 	Symbol  string   `json:"symbol"`
@@ -29,7 +29,7 @@ type NewPayload struct {
 	Options []string `json:"options"`
 }
 
-type NewResponse struct {
+type newResponse struct {
 	OrderID           string   `json:"order_id"`
 	ID                string   `json:"id"`
 	Symbol            string   `json:"symbol"`
@@ -54,8 +54,8 @@ func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
 
-	p := &NewPayload{
-		Request: NEWORDERENDPOINT,
+	p := &newPayload{
+		Request: newOrderEndpoint,
 		Nonce:   nonce,
 		Symbol:  symbol,
 		Amount:  amount,
@@ -86,13 +86,13 @@ func SigBuilder(payload, apisecret string) string {
 	return signature
 }
 
-func NewOrder(baseurl, apikey, payload, signature string) (NewResponse, error) {
+func NewOrder(baseurl, apikey, payload, signature string) (newResponse, error) {
 
-	url := baseurl + NEWORDERENDPOINT
+	url := baseurl + newOrderEndpoint
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return NewResponse{}, fmt.Errorf("http new request ecountered an error: %v", err)
+		return newResponse{}, fmt.Errorf("http new request ecountered an error: %v", err)
 	}
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Add("Content-Length", "0")
@@ -104,25 +104,25 @@ func NewOrder(baseurl, apikey, payload, signature string) (NewResponse, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return NewResponse{}, fmt.Errorf("http client ecountered an error: %v", err)
+		return newResponse{}, fmt.Errorf("http client ecountered an error: %v", err)
 	}
 	defer resp.Body.Close()
 
-	var response NewResponse
+	var response newResponse
 	if resp.StatusCode == 200 {
 		err = json.NewDecoder(resp.Body).Decode(&response)
 		if err != nil {
-			return NewResponse{}, fmt.Errorf("json decoder ecountered an error: %v", err)
+			return newResponse{}, fmt.Errorf("json decoder ecountered an error: %v", err)
 		}
 	} else {
 		resp.Body.Close()
-		return NewResponse{}, fmt.Errorf("%v: ecountered an error: %v", resp.StatusCode, err)
+		return newResponse{}, fmt.Errorf("%v: ecountered an error: %v", resp.StatusCode, err)
 	}
 
 	return response, nil
 }
 
-func MakePretty(r NewResponse) {
+func MakePretty(r newResponse) {
 
 	respTemplate := `
 OrderID:		{{.OrderID}}

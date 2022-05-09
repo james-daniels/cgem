@@ -1,4 +1,4 @@
-package main
+package control
 
 import (
 	"encoding/json"
@@ -8,18 +8,18 @@ import (
 )
 
 const (
-	PRICEFEEDENDPOINT = "/v1/pricefeed"
+	priceFeedEndpoint = "/v1/pricefeed"
 )
 
-type NewPrice struct {
+type newPrice struct {
 	Pair                string `json:"pair"`
 	Price               string `json:"price"`
 	PercentageChange24h string `json:"percentChange24h"`
 }
 
-func GetPrice(symbol, baseurl string) *NewPrice {
+func GetPrice(symbol, baseurl string) *newPrice {
 
-	url := baseurl + PRICEFEEDENDPOINT
+	url := baseurl + priceFeedEndpoint
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -27,7 +27,7 @@ func GetPrice(symbol, baseurl string) *NewPrice {
 	}
 	defer resp.Body.Close()
 
-	var np []NewPrice
+	var np []newPrice
 	if resp.StatusCode == 200 {
 		err = json.NewDecoder(resp.Body).Decode(&np)
 		if err != nil {
@@ -40,7 +40,7 @@ func GetPrice(symbol, baseurl string) *NewPrice {
 
 	for _, v := range np {
 		if v.Pair == strings.ToUpper(symbol) {
-			return &NewPrice{
+			return &newPrice{
 				Pair:                v.Pair,
 				Price:               v.Price,
 				PercentageChange24h: v.PercentageChange24h,

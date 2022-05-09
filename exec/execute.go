@@ -1,4 +1,4 @@
-package main
+package exec
 
 import (
 	"fmt"
@@ -7,24 +7,21 @@ import (
 	"time"
 
 	"gopkg.in/ini.v1"
+	"cgem/control"
 )
 
 const (
-	PRODUCTION = "https://api.gemini.com"
-	SANDBOX    = "https://api.sandbox.gemini.com"
+	production = "https://api.gemini.com"
+	sandbox    = "https://api.sandbox.gemini.com"
 )
 
 var (
-	amount    string
 	apikey    string
 	apisecret string
 	env       string
 	freq      int
-	offset    int
 	pretty    bool
 	repeat    bool
-	side      string
-	symbol    string
 )
 
 func init() {
@@ -50,30 +47,42 @@ func init() {
 	}
 }
 
-func oneInst() {
+
+func Execute(symbol, amount, side string, offset int) {
+	
+	switch repeat {
+	case true:
+		multiInst(symbol, amount, side, offset)
+	default:
+		oneInst(symbol, amount, side, offset)
+	}
+}
+
+
+func oneInst(symbol, amount, side string, offset int) {
 
 	baseurl := getEnv(env)
 
-	gp := GetPrice(symbol, baseurl)
+	gp := control.GetPrice(symbol, baseurl)
 	price, err := priceOffset(gp.Price, offset)
 	errHandler(err)
 
-	payload, err := PayloadBuilder(symbol, amount, price, side)
+	payload, err := control.PayloadBuilder(symbol, amount, price, side)
 	errHandler(err)
 
-	signature := SigBuilder(payload, apisecret)
+	signature := control.SigBuilder(payload, apisecret)
 
-	response, err := NewOrder(baseurl, apikey, payload, signature)
+	response, err := control.NewOrder(baseurl, apikey, payload, signature)
 	errHandler(err)
 
 	if pretty {
-		MakePretty(response)
+		control.MakePretty(response)
 	} else {
 		log.Printf("%+v\n", response)
 	}
 }
 
-func multiInst() {
+func multiInst(symbol, amount, side string, offset int) {
 
 	baseurl := getEnv(env)
 
@@ -83,16 +92,16 @@ func multiInst() {
 	} else {
 
 		for {
-			gp := GetPrice(symbol, baseurl)
+			gp := control.GetPrice(symbol, baseurl)
 			price, err := priceOffset(gp.Price, offset)
 			errHandler(err)
 
-			payload, err := PayloadBuilder(symbol, amount, price, side)
+			payload, err := control.PayloadBuilder(symbol, amount, price, side)
 			errHandler(err)
 
-			signature := SigBuilder(payload, apisecret)
+			signature := control.SigBuilder(payload, apisecret)
 
-			response, err := NewOrder(baseurl, apikey, payload, signature)
+			response, err := control.NewOrder(baseurl, apikey, payload, signature)
 			errHandler(err)
 
 			log.Printf("%+v\n\n", response)
@@ -111,9 +120,9 @@ func errHandler(err error) {
 func getEnv(env string) string {
 	switch env {
 	case "production":
-		return PRODUCTION
+		return production
 	case "sandbox":
-		return SANDBOX
+		return sandbox
 	default:
 		return fmt.Sprintln(`enter a value of either "production" or "sandbox".`)
 	}
