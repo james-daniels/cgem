@@ -2,6 +2,8 @@
 
 Wanted to use Go to utilize the Gemini Exchange APIs.
 
+Will build out this doc at a later time.
+
 ## Sources:
 https://docs.gemini.com/rest-api/#new-order   
 https://golangbyexample.com/set-headers-http-request/   
