@@ -50,7 +50,9 @@ func init() {
 	}
 }
 
-func oneInst(baseurl string) {
+func oneInst() {
+
+	baseurl := getEnv(env)
 
 	g := GetPrice(symbol, baseurl)
 	price, err := priceOffset(g, offset)
@@ -71,7 +73,9 @@ func oneInst(baseurl string) {
 	}
 }
 
-func multiInst(baseurl string) {
+func multiInst() {
+
+	baseurl := getEnv(env)
 
 	if freq <= 0 {
 		log.Fatalln("enter frequency value greater than 0")
@@ -115,11 +119,10 @@ func getEnv(env string) string {
 	}
 }
 
-
-func priceOffset (p *NewPrice, o int) (string, error) {
+func priceOffset(p *NewPrice, o int) (string, error) {
 	price, err := strconv.ParseFloat(p.Price, 64)
-		if err != nil {
-			return "", fmt.Errorf("string convert parse float ecountered an error: %v", err)
+	if err != nil {
+		return "", fmt.Errorf("string convert parse float ecountered an error: %v", err)
 	}
 	return fmt.Sprint(price + float64(o)), nil
 }

@@ -14,6 +14,10 @@ import (
 	"time"
 )
 
+const (
+	NEWORDERENDPOINT = "/v1/order/new"
+)
+
 type NewPayload struct {
 	Request string   `json:"request"`
 	Nonce   string   `json:"nonce"`
@@ -51,7 +55,7 @@ func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
 
 	p := &NewPayload{
-		Request: "/v1/order/new",
+		Request: NEWORDERENDPOINT,
 		Nonce:   nonce,
 		Symbol:  symbol,
 		Amount:  amount,
@@ -84,8 +88,7 @@ func SigBuilder(payload, apisecret string) string {
 
 func NewOrder(baseurl, apikey, payload, signature string) (NewResponse, error) {
 
-	endpoint := "/v1/order/new"
-	url := baseurl + endpoint
+	url := baseurl + NEWORDERENDPOINT
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {

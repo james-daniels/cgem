@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+const (
+	PRICEFEEDENDPOINT = "/v1/pricefeed"
+)
+
 type NewPrice struct {
 	Pair                string `json:"pair"`
 	Price               string `json:"price"`
@@ -14,9 +18,8 @@ type NewPrice struct {
 }
 
 func GetPrice(symbol, baseurl string) *NewPrice {
-	
-	endpoint := "/v1/pricefeed"
-	url := baseurl + endpoint
+
+	url := baseurl + PRICEFEEDENDPOINT
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -38,12 +41,11 @@ func GetPrice(symbol, baseurl string) *NewPrice {
 	for _, v := range np {
 		if v.Pair == strings.ToUpper(symbol) {
 			return &NewPrice{
-			Pair: v.Pair,
-			Price: v.Price,
-			PercentageChange24h: v.PercentageChange24h,
+				Pair:                v.Pair,
+				Price:               v.Price,
+				PercentageChange24h: v.PercentageChange24h,
 			}
 		}
 	}
 	return nil
 }
-

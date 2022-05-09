@@ -20,8 +20,8 @@ func main() {
 
 	switch repeat {
 	case true:
-		multiInst(getEnv(env))
+		multiInst()
 	default:
-		oneInst(getEnv(env))
+		oneInst()
 	}
 }
