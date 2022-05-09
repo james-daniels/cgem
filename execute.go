@@ -116,10 +116,10 @@ func getEnv(env string) string {
 }
 
 
-func priceOffset (p *NewPrice, offset int) (string, error) {
+func priceOffset (p *NewPrice, o int) (string, error) {
 	price, err := strconv.ParseFloat(p.Price, 64)
 		if err != nil {
 			return "", fmt.Errorf("string convert parse float ecountered an error: %v", err)
 	}
-	return fmt.Sprint(price + float64(offset)), nil
+	return fmt.Sprint(price + float64(o)), nil
 }
