@@ -1,4 +1,4 @@
-# Gemini
+# cGem
 
 Wanted to use Go to utilize the Gemini Exchange APIs.
 
