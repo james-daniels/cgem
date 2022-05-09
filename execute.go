@@ -54,8 +54,8 @@ func oneInst() {
 
 	baseurl := getEnv(env)
 
-	g := GetPrice(symbol, baseurl)
-	price, err := priceOffset(g, offset)
+	gp := GetPrice(symbol, baseurl)
+	price, err := priceOffset(gp.Price, offset)
 	errHandler(err)
 
 	payload, err := PayloadBuilder(symbol, amount, price, side)
@@ -83,8 +83,8 @@ func multiInst() {
 	} else {
 
 		for {
-			g := GetPrice(symbol, baseurl)
-			price, err := priceOffset(g, offset)
+			gp := GetPrice(symbol, baseurl)
+			price, err := priceOffset(gp.Price, offset)
 			errHandler(err)
 
 			payload, err := PayloadBuilder(symbol, amount, price, side)
@@ -119,10 +119,10 @@ func getEnv(env string) string {
 	}
 }
 
-func priceOffset(p *NewPrice, o int) (string, error) {
-	price, err := strconv.ParseFloat(p.Price, 64)
+func priceOffset(price string, offset int) (string, error) {
+	p, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return "", fmt.Errorf("string convert parse float ecountered an error: %v", err)
 	}
-	return fmt.Sprint(price + float64(o)), nil
+	return fmt.Sprint(p + float64(offset)), nil
 }
