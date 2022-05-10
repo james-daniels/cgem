@@ -14,10 +14,6 @@ import (
 	"time"
 )
 
-const (
-	newOrderEndpoint = "/v1/order/new"
-)
-
 type newPayload struct {
 	Request string   `json:"request"`
 	Nonce   string   `json:"nonce"`

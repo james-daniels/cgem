@@ -24,7 +24,7 @@ var buyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(buyCmd)
 
-	buyCmd.PersistentFlags().StringVarP(&symbol, "symbol","s", "", "SYMBOL: symbol for the new order")
-	buyCmd.PersistentFlags().StringVarP(&amount, "amount","a", "", "AMOUNT: amount to purchase")
-	buyCmd.PersistentFlags().IntVarP(&offset, "offset","o", 0, "OFFSET: amount to ADD TO PRICE")
+	buyCmd.Flags().StringVarP(&symbol, "symbol","s", "", "SYMBOL: symbol for the new order")
+	buyCmd.Flags().StringVarP(&amount, "amount","a", "", "AMOUNT: amount to purchase")
+	buyCmd.Flags().IntVarP(&offset, "offset","o", 0, "OFFSET: amount to ADD TO PRICE")
 }

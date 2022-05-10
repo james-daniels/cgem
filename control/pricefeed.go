@@ -4,11 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
-)
-
-const (
-	priceFeedEndpoint = "/v1/pricefeed"
 )
 
 type newPrice struct {
@@ -48,4 +45,12 @@ func GetPrice(symbol, baseurl string) *newPrice {
 		}
 	}
 	return nil
+}
+
+func PriceOffset(price string, offset int) (string, error) {
+	p, err := strconv.ParseFloat(price, 64)
+	if err != nil {
+		return "", fmt.Errorf("string convert parse float ecountered an error: %v", err)
+	}
+	return fmt.Sprint(p + float64(offset)), nil
 }
