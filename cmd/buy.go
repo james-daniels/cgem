@@ -1,7 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -10,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// buyCmd represents the buy command
 var buyCmd = &cobra.Command{
 	Use:   "buy",
 	Short: "buy side places order to buy crypto",
