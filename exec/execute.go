@@ -55,6 +55,9 @@ func oneInst(symbol, amount, side string, offset int) {
 	baseurl := getEnv(env)
 
 	gp := order.GetPrice(symbol, baseurl)
+	if gp == nil {
+		log.Fatalf("could not find trading pair '%v'\n", symbol)
+	}
 	price, err := order.PriceOffset(gp.Price, offset)
 	errHandler(err)
 
@@ -84,6 +87,9 @@ func multiInst(symbol, amount, side string, offset int) {
 
 		for {
 			gp := order.GetPrice(symbol, baseurl)
+			if gp == nil {
+				log.Fatalf("could not find trading pair '%v'\n", symbol)
+			}
 			price, err := order.PriceOffset(gp.Price, offset)
 			errHandler(err)
 
