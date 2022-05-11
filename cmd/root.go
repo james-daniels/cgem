@@ -10,7 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{}
+var rootCmd = &cobra.Command{
+	Use: "cGem",
+	Short: "Use cGem to buy and sell crypto",
+	Long: "Use cGem to quickly buy and sell cryto on the Gemini Exchange",
+}
 
 func Execute() {
 	err := rootCmd.Execute()
