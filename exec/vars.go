@@ -10,7 +10,7 @@ var (
 	apisecret string
 	env       string
 	freq      int
-	iniOffset    int
+	iOffset    int
 	pretty    bool
 	repeat    bool
 )

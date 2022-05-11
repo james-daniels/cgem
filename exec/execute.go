@@ -18,7 +18,7 @@ func init() {
 	apikey = cfg.Section("credentials").Key("apikey").String()
 	apisecret = cfg.Section("credentials").Key("apisecret").String()
 	pretty, _ = cfg.Section("").Key("pretty").Bool()
-	iniOffset, _ = cfg.Section("orders").Key("offset").Int()
+	iOffset, _ = cfg.Section("orders").Key("offset").Int()
 	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
 	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
 
@@ -27,8 +27,8 @@ func init() {
 
 func Execute(symbol, side string, amount, offset int) {
 
-	if iniOffset != 0 {
-		offset = iniOffset
+	if iOffset != 0 {
+		offset = iOffset
 	}
 
 	switch repeat {
