@@ -14,7 +14,7 @@ type newPrice struct {
 	PercentageChange24h string `json:"percentChange24h"`
 }
 
-func GetPrice(symbol, baseurl string) *newPrice {
+func PriceFeed(symbol, baseurl string) (*newPrice, error) {
 
 	url := baseurl + priceFeedEndpoint
 
@@ -41,10 +41,10 @@ func GetPrice(symbol, baseurl string) *newPrice {
 				Pair:                v.Pair,
 				Price:               v.Price,
 				PercentageChange24h: v.PercentageChange24h,
-			}
+			}, nil
 		}
 	}
-	return nil
+	return nil, fmt.Errorf("could not find trading pair '%v'", symbol)
 }
 
 func PriceOffset(price string, offset int) (string, error) {

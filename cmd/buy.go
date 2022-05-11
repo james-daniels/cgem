@@ -8,8 +8,8 @@ import (
 
 var buyCmd = &cobra.Command{
 	Use:   "buy",
-	Short: "buy side places order to buy crypto",
-	Long: "buy will fill whatever part of the order it can immediately, then cancel any remaining amount",
+	Short: "Buy side places order to buy crypto",
+	Long: "Buy will fill whatever part of the order it can immediately, then cancel any remaining amount",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		exec.Execute(symbol, bside, amount, offset)
@@ -19,7 +19,7 @@ var buyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(buyCmd)
 
-	buyCmd.Flags().StringVarP(&symbol, "symbol","s", "", "SYMBOL: symbol for the new order")
+	buyCmd.Flags().StringVarP(&symbol, "symbol","s", "", "SYMBOL: symbol of the trading pair")
 	buyCmd.MarkFlagRequired("symbol")
 	buyCmd.Flags().IntVarP(&amount, "amount","a", 0, "AMOUNT: amount to purchase")
 	buyCmd.MarkFlagRequired("amount")

@@ -1,6 +1,7 @@
 package exec
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -53,11 +54,10 @@ func oneInst(symbol, side string, amount, offset int) {
 
 	baseurl := getEnv(env)
 
-	gp := order.GetPrice(symbol, baseurl)
-	if gp == nil {
-		log.Fatalf("could not find trading pair '%v'\n", symbol)
-	}
-	price, err := order.PriceOffset(gp.Price, offset)
+	p, err := order.PriceFeed(symbol, baseurl)
+	errHandler(err)
+
+	price, err := order.PriceOffset(p.Price, offset)
 	errHandler(err)
 
 	payload, err := order.PayloadBuilder(symbol, price, side, amount)
@@ -85,11 +85,10 @@ func multiInst(symbol, side string, amount, offset int) {
 	} else {
 
 		for {
-			gp := order.GetPrice(symbol, baseurl)
-			if gp == nil {
-				log.Fatalf("could not find trading pair '%v'\n", symbol)
-			}
-			price, err := order.PriceOffset(gp.Price, offset)
+			p, err := order.PriceFeed(symbol, baseurl)
+			errHandler(err)
+
+			price, err := order.PriceOffset(p.Price, offset)
 			errHandler(err)
 
 			payload, err := order.PayloadBuilder(symbol, price, side, amount)
@@ -111,4 +110,14 @@ func errHandler(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func GetPrice(symbol string) {
+
+	baseurl := getEnv(env)
+
+	p, err := order.PriceFeed(symbol, baseurl)
+	errHandler(err)
+
+	fmt.Printf("%v: %v\n", p.Pair, p.Price)
 }
