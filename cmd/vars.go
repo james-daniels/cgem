@@ -6,7 +6,7 @@ const (
 )
 
 var (
-	amount string
+	amount int
 	offset int
 	symbol string
 )

@@ -46,7 +46,7 @@ type newResponse struct {
 	OriginalAmount    string   `json:"original_amount"`
 }
 
-func PayloadBuilder(symbol, amount, price, side string) (string, error) {
+func PayloadBuilder(symbol, price, side string, amount int) (string, error) {
 
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
 
@@ -54,7 +54,7 @@ func PayloadBuilder(symbol, amount, price, side string) (string, error) {
 		Request: newOrderEndpoint,
 		Nonce:   nonce,
 		Symbol:  symbol,
-		Amount:  amount,
+		Amount:  fmt.Sprint(amount),
 		Price:   price,
 		Side:    side,
 		Type:    "exchange limit",

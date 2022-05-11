@@ -17,7 +17,7 @@ var buyCmd = &cobra.Command{
 	Long: "buy will fill whatever part of the order it can immediately, then cancel any remaining amount",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		exec.Execute(symbol, amount, bside, offset)
+		exec.Execute(symbol, bside, amount, offset)
 	},
 }
 
@@ -26,7 +26,7 @@ func init() {
 
 	buyCmd.Flags().StringVarP(&symbol, "symbol","s", "", "SYMBOL: symbol for the new order")
 	buyCmd.MarkFlagRequired("symbol")
-	buyCmd.Flags().StringVarP(&amount, "amount","a", "", "AMOUNT: amount to purchase")
+	buyCmd.Flags().IntVarP(&amount, "amount","a", 0, "AMOUNT: amount to purchase")
 	buyCmd.MarkFlagRequired("amount")
 	buyCmd.Flags().IntVarP(&offset, "offset","o", 0, "OFFSET: amount to ADD TO PRICE")
 }

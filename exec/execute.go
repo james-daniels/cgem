@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cgem/order"
+
 	"gopkg.in/ini.v1"
 )
 
@@ -16,8 +17,6 @@ func init() {
 	env = cfg.Section("").Key("environment").String()
 	apikey = cfg.Section("credentials").Key("apikey").String()
 	apisecret = cfg.Section("credentials").Key("apisecret").String()
-
-	// Optional parameters
 	pretty, _ = cfg.Section("").Key("pretty").Bool()
 	iniOffset, _ = cfg.Section("orders").Key("offset").Int()
 	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
@@ -26,7 +25,7 @@ func init() {
 }
 
 
-func Execute(symbol, amount, side string, offset int) {
+func Execute(symbol, side string, amount, offset int) {
 
 	if iniOffset != 0 {
 		offset = iniOffset
@@ -34,9 +33,9 @@ func Execute(symbol, amount, side string, offset int) {
 
 	switch repeat {
 	case true:
-		multiInst(symbol, amount, side, offset)
+		multiInst(symbol, side, amount, offset)
 	default:
-		oneInst(symbol, amount, side, offset)
+		oneInst(symbol, side,amount, offset)
 	}
 }
 
@@ -50,7 +49,7 @@ func getEnv(env string) string {
 	}
 }
 
-func oneInst(symbol, amount, side string, offset int) {
+func oneInst(symbol, side string, amount, offset int) {
 
 	baseurl := getEnv(env)
 
@@ -61,7 +60,7 @@ func oneInst(symbol, amount, side string, offset int) {
 	price, err := order.PriceOffset(gp.Price, offset)
 	errHandler(err)
 
-	payload, err := order.PayloadBuilder(symbol, amount, price, side)
+	payload, err := order.PayloadBuilder(symbol, price, side, amount)
 	errHandler(err)
 
 	signature := order.SigBuilder(payload, apisecret)
@@ -76,7 +75,7 @@ func oneInst(symbol, amount, side string, offset int) {
 	}
 }
 
-func multiInst(symbol, amount, side string, offset int) {
+func multiInst(symbol, side string, amount, offset int) {
 
 	baseurl := getEnv(env)
 
@@ -93,7 +92,7 @@ func multiInst(symbol, amount, side string, offset int) {
 			price, err := order.PriceOffset(gp.Price, offset)
 			errHandler(err)
 
-			payload, err := order.PayloadBuilder(symbol, amount, price, side)
+			payload, err := order.PayloadBuilder(symbol, price, side, amount)
 			errHandler(err)
 
 			signature := order.SigBuilder(payload, apisecret)
