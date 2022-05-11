@@ -40,15 +40,7 @@ func Execute(symbol, side string, amount, offset int) {
 	}
 }
 
-func getEnv(env string) string {
 
-	switch env {
-	case "production":
-		return production
-	default:
-		return sandbox
-	}
-}
 
 func oneInst(symbol, side string, amount, offset int) {
 
@@ -109,6 +101,16 @@ func multiInst(symbol, side string, amount, offset int) {
 func errHandler(err error) {
 	if err != nil {
 		log.Fatalln(err)
+	}
+}
+
+func getEnv(env string) string {
+
+	switch env {
+	case "production":
+		return production
+	default:
+		return sandbox
 	}
 }
 
