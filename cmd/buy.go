@@ -12,8 +12,8 @@ import (
 // buyCmd represents the buy command
 var buyCmd = &cobra.Command{
 	Use:   "buy",
-	Short: "Short description to buy",
-	Long: "Long description to use the buy function on the app",
+	Short: "buy side places order to buy crypto",
+	Long: "buy will fill whatever part of the order it can immediately, then cancel any remaining amount",
 	Run: func(cmd *cobra.Command, args []string) {
 
 	exec.Execute(symbol, amount, bside, offset)

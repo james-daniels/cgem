@@ -12,8 +12,8 @@ import (
 // sellCmd represents the sell command
 var sellCmd = &cobra.Command{
 	Use:   "sell",
-	Short: "A brief description of your command",
-	Long: "",
+	Short: "sell side places order to buy crypto",
+	Long: "sell will fill whatever part of the order it can immediately, then cancel any remaining amount",
 	Run: func(cmd *cobra.Command, args []string) {
 
 	exec.Execute(symbol, amount, sside, offset)
