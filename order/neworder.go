@@ -57,10 +57,8 @@ func PayloadBuilder(symbol, price, side string, amount int) (string, error) {
 		Amount:  fmt.Sprint(amount),
 		Price:   price,
 		Side:    side,
-		Type:    "exchange limit",
-		Options: []string{
-			"immediate-or-cancel",
-		},
+		Type:    oType,
+		Options: []string{options},
 	}
 
 	encodePayload, err := json.Marshal(p)
@@ -140,6 +138,7 @@ StopPrice:		{{.StopPrice}}
 Price:			{{.Price}}
 OriginalAmount:		{{.OriginalAmount}}
 `
+
 	t := template.Must(template.New("respTemplate").Parse(respTemplate))
 	err := t.Execute(os.Stdout, r)
 	if err != nil {

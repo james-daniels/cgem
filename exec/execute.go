@@ -22,22 +22,25 @@ func init() {
 	iOffset, _ = cfg.Section("orders").Key("offset").Int()
 	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
 	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
-
 }
 
 func Execute(symbol, side string, amount, offset int) {
 
-	switch repeat && freq > 0 {
+	baseurl := getEnv(env)
+
+	switch repeat {
 	case true:
-		multiInst(symbol, side, amount, offset)
+		if freq <= 0 {
+			logger(logfile).Fatalln("enter frequency value greater than 0")
+		} else {
+			multiInst(symbol, side, baseurl, amount, offset)
+		}
 	default:
-		oneInst(symbol, side, amount, offset)
+		oneInst(symbol, side, baseurl, amount, offset)
 	}
 }
 
-func oneInst(symbol, side string, amount, offset int) {
-
-	baseurl := getEnv(env)
+func oneInst(symbol, side, baseurl string, amount, offset int) {
 
 	p, err := order.PriceFeed(symbol, baseurl)
 	errHandler(err)
@@ -65,40 +68,31 @@ func oneInst(symbol, side string, amount, offset int) {
 	}
 }
 
-func multiInst(symbol, side string, amount, offset int) {
+func multiInst(symbol, side, baseurl string, amount, offset int) {
 
-	baseurl := getEnv(env)
+	logger(logfile).Println("app started")
 
-	if freq <= 0 {
-		logger(logfile).Fatalln("enter frequency value greater than 0")
+	for {
+		p, err := order.PriceFeed(symbol, baseurl)
+		errHandler(err)
 
-	} else {
-
-		logger(logfile).Println("app started")
-
-		for {
-
-			p, err := order.PriceFeed(symbol, baseurl)
-			errHandler(err)
-
-			if iOffset != 0 {
-				offset = iOffset
-			}
-			price, err := order.PriceOffset(p.Price, offset)
-			errHandler(err)
-
-			payload, err := order.PayloadBuilder(symbol, price, side, amount)
-			errHandler(err)
-
-			signature := order.SigBuilder(payload, apisecret)
-
-			response, err := order.NewOrder(baseurl, apikey, payload, signature)
-			errHandler(err)
-
-			logger(logfile).Printf("%+v\n", response)
-
-			time.Sleep(time.Hour * time.Duration(freq))
+		if iOffset != 0 {
+			offset = iOffset
 		}
+		price, err := order.PriceOffset(p.Price, offset)
+		errHandler(err)
+
+		payload, err := order.PayloadBuilder(symbol, price, side, amount)
+		errHandler(err)
+
+		signature := order.SigBuilder(payload, apisecret)
+
+		response, err := order.NewOrder(baseurl, apikey, payload, signature)
+		errHandler(err)
+
+		logger(logfile).Printf("%+v\n", response)
+
+		time.Sleep(time.Hour * time.Duration(freq))
 	}
 }
 
