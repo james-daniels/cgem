@@ -25,6 +25,7 @@ func init() {
 
 }
 
+
 func Execute(symbol, side string, amount, offset int) {
 
 	switch repeat && freq > 0 {

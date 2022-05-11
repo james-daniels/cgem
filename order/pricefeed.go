@@ -14,6 +14,7 @@ type newPrice struct {
 	PercentageChange24h string `json:"percentChange24h"`
 }
 
+
 func PriceFeed(symbol, baseurl string) (*newPrice, error) {
 
 	url := baseurl + priceFeedEndpoint

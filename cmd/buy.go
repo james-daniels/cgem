@@ -16,6 +16,7 @@ var buyCmd = &cobra.Command{
 	},
 }
 
+
 func init() {
 	rootCmd.AddCommand(buyCmd)
 
