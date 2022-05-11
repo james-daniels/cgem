@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
+	"cgem/order"
 	"gopkg.in/ini.v1"
-	"cgem/control"
 )
 
 func init() {
@@ -54,20 +54,20 @@ func oneInst(symbol, amount, side string, offset int) {
 
 	baseurl := getEnv(env)
 
-	gp := control.GetPrice(symbol, baseurl)
-	price, err := control.PriceOffset(gp.Price, offset)
+	gp := order.GetPrice(symbol, baseurl)
+	price, err := order.PriceOffset(gp.Price, offset)
 	errHandler(err)
 
-	payload, err := control.PayloadBuilder(symbol, amount, price, side)
+	payload, err := order.PayloadBuilder(symbol, amount, price, side)
 	errHandler(err)
 
-	signature := control.SigBuilder(payload, apisecret)
+	signature := order.SigBuilder(payload, apisecret)
 
-	response, err := control.NewOrder(baseurl, apikey, payload, signature)
+	response, err := order.NewOrder(baseurl, apikey, payload, signature)
 	errHandler(err)
 
 	if pretty {
-		control.MakePretty(response)
+		order.MakePretty(response)
 	} else {
 		log.Printf("%+v\n", response)
 	}
@@ -83,16 +83,16 @@ func multiInst(symbol, amount, side string, offset int) {
 	} else {
 
 		for {
-			gp := control.GetPrice(symbol, baseurl)
-			price, err := control.PriceOffset(gp.Price, offset)
+			gp := order.GetPrice(symbol, baseurl)
+			price, err := order.PriceOffset(gp.Price, offset)
 			errHandler(err)
 
-			payload, err := control.PayloadBuilder(symbol, amount, price, side)
+			payload, err := order.PayloadBuilder(symbol, amount, price, side)
 			errHandler(err)
 
-			signature := control.SigBuilder(payload, apisecret)
+			signature := order.SigBuilder(payload, apisecret)
 
-			response, err := control.NewOrder(baseurl, apikey, payload, signature)
+			response, err := order.NewOrder(baseurl, apikey, payload, signature)
 			errHandler(err)
 
 			log.Printf("%+v\n\n", response)

@@ -5,8 +5,8 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"cgem/exec"
+	"github.com/spf13/cobra"
 )
 
 // buyCmd represents the buy command
