@@ -3,18 +3,17 @@ package exec
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"cgem/order"
-
 	"gopkg.in/ini.v1"
 )
 
 func init() {
 	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		log.Fatalf("Failed to read file: %v", err)
-	}
+	errHandler(err)
+
 	env = cfg.Section("").Key("environment").String()
 	apikey = cfg.Section("credentials").Key("apikey").String()
 	apisecret = cfg.Section("credentials").Key("apisecret").String()
@@ -62,8 +61,10 @@ func oneInst(symbol, side string, amount, offset int) {
 
 	if pretty {
 		order.MakePretty(response)
+		logger().Printf("%+v\n", response)
 	} else {
-		log.Printf("%+v\n", response)
+		fmt.Printf("%+v\n", response)
+		logger().Printf("%+v\n", response)
 	}
 }
 
@@ -72,11 +73,14 @@ func multiInst(symbol, side string, amount, offset int) {
 	baseurl := getEnv(env)
 
 	if freq <= 0 {
-		log.Fatalln("enter frequency value greater than 0")
+		logger().Fatalln("enter frequency value greater than 0")
 
 	} else {
 
+		logger().Println("app started")
+
 		for {
+
 			p, err := order.PriceFeed(symbol, baseurl)
 			errHandler(err)
 
@@ -91,7 +95,7 @@ func multiInst(symbol, side string, amount, offset int) {
 			response, err := order.NewOrder(baseurl, apikey, payload, signature)
 			errHandler(err)
 
-			log.Printf("%+v\n\n", response)
+			logger().Printf("%+v\n\n", response)
 
 			time.Sleep(time.Hour * time.Duration(freq))
 		}
@@ -100,12 +104,11 @@ func multiInst(symbol, side string, amount, offset int) {
 
 func errHandler(err error) {
 	if err != nil {
-		log.Fatalln(err)
+		logger().Fatalln(err)
 	}
 }
 
 func getEnv(env string) string {
-
 	switch env {
 	case "production":
 		return production
@@ -115,11 +118,19 @@ func getEnv(env string) string {
 }
 
 func GetPrice(symbol string) {
-
 	baseurl := getEnv(env)
 
 	p, err := order.PriceFeed(symbol, baseurl)
 	errHandler(err)
 
 	fmt.Printf("%v: %v\n", p.Pair, p.Price)
+}
+
+func logger() *log.Logger {
+	logfile, err := os.OpenFile("cgem.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return log.New(logfile, "cgem: ", log.LstdFlags|log.Lshortfile)
 }
