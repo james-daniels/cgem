@@ -11,12 +11,13 @@ import (
 )
 
 func init() {
-	cfg, err := ini.Load("config.ini")
+	cfg, err := ini.Load(configFile)
 	errHandler(err)
 
 	env = cfg.Section("").Key("environment").String()
 	apikey = cfg.Section("credentials").Key("apikey").String()
 	apisecret = cfg.Section("credentials").Key("apisecret").String()
+	logfile = cfg.Section("logging").Key("logfile").String()
 	pretty, _ = cfg.Section("").Key("pretty").Bool()
 	iOffset, _ = cfg.Section("orders").Key("offset").Int()
 	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
@@ -24,22 +25,15 @@ func init() {
 
 }
 
-
 func Execute(symbol, side string, amount, offset int) {
 
-	if iOffset != 0 {
-		offset = iOffset
-	}
-
-	switch repeat {
+	switch repeat && freq > 0 {
 	case true:
 		multiInst(symbol, side, amount, offset)
 	default:
-		oneInst(symbol, side,amount, offset)
+		oneInst(symbol, side, amount, offset)
 	}
 }
-
-
 
 func oneInst(symbol, side string, amount, offset int) {
 
@@ -48,6 +42,9 @@ func oneInst(symbol, side string, amount, offset int) {
 	p, err := order.PriceFeed(symbol, baseurl)
 	errHandler(err)
 
+	if iOffset != 0 {
+		offset = iOffset
+	}
 	price, err := order.PriceOffset(p.Price, offset)
 	errHandler(err)
 
@@ -61,10 +58,10 @@ func oneInst(symbol, side string, amount, offset int) {
 
 	if pretty {
 		order.MakePretty(response)
-		logger().Printf("%+v\n", response)
+		logger(logfile).Printf("%+v\n", response)
 	} else {
 		fmt.Printf("%+v\n", response)
-		logger().Printf("%+v\n", response)
+		logger(logfile).Printf("%+v\n", response)
 	}
 }
 
@@ -73,17 +70,20 @@ func multiInst(symbol, side string, amount, offset int) {
 	baseurl := getEnv(env)
 
 	if freq <= 0 {
-		logger().Fatalln("enter frequency value greater than 0")
+		logger(logfile).Fatalln("enter frequency value greater than 0")
 
 	} else {
 
-		logger().Println("app started")
+		logger(logfile).Println("app started")
 
 		for {
 
 			p, err := order.PriceFeed(symbol, baseurl)
 			errHandler(err)
 
+			if iOffset != 0 {
+				offset = iOffset
+			}
 			price, err := order.PriceOffset(p.Price, offset)
 			errHandler(err)
 
@@ -95,7 +95,7 @@ func multiInst(symbol, side string, amount, offset int) {
 			response, err := order.NewOrder(baseurl, apikey, payload, signature)
 			errHandler(err)
 
-			logger().Printf("%+v\n\n", response)
+			logger(logfile).Printf("%+v\n", response)
 
 			time.Sleep(time.Hour * time.Duration(freq))
 		}
@@ -104,7 +104,7 @@ func multiInst(symbol, side string, amount, offset int) {
 
 func errHandler(err error) {
 	if err != nil {
-		logger().Fatalln(err)
+		logger(logfile).Fatalln(err)
 	}
 }
 
@@ -126,11 +126,15 @@ func GetPrice(symbol string) {
 	fmt.Printf("%v: %v\n", p.Pair, p.Price)
 }
 
-func logger() *log.Logger {
-	logfile, err := os.OpenFile("cgem.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+func logger(logfile string) *log.Logger {
+	if logfile == "" {
+		logfile = "cgem.log"
+	}
+	o, err := os.OpenFile(logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	return log.New(logfile, "cgem: ", log.LstdFlags|log.Lshortfile)
+	return log.New(o, "cgem: ", log.LstdFlags|log.Lshortfile)
 }

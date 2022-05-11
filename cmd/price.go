@@ -9,7 +9,7 @@ import (
 var priceCmd = &cobra.Command{
 	Use:   "price",
 	Short: "Price of trading pair",
-	Long: "Get the price of trading pair by providing the symbol",
+	Long:  "Get the price of trading pair by providing the symbol",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		exec.GetPrice(symbol)
@@ -20,6 +20,6 @@ var priceCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(priceCmd)
 
-	priceCmd.Flags().StringVarP(&symbol, "symbol","s", "", "SYMBOL: symbol of the trading pair")
+	priceCmd.Flags().StringVarP(&symbol, "symbol", "s", "", "SYMBOL: symbol of the trading pair")
 	priceCmd.MarkFlagRequired("symbol")
 }
