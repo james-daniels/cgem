@@ -10,4 +10,3 @@ var (
 	offset int
 	symbol string
 )
-

@@ -13,8 +13,7 @@ var (
 	env       string
 	freq      int
 	iOffset   int
-	logfile  string
+	logfile   string
 	pretty    bool
 	repeat    bool
 )
-

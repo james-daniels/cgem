@@ -17,7 +17,6 @@ var priceCmd = &cobra.Command{
 	},
 }
 
-
 func init() {
 	rootCmd.AddCommand(priceCmd)
 

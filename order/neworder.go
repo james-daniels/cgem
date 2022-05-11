@@ -25,7 +25,6 @@ type newPayload struct {
 	Options []string `json:"options"`
 }
 
-
 type newResponse struct {
 	OrderID           string   `json:"order_id"`
 	ID                string   `json:"id"`

@@ -25,7 +25,6 @@ func init() {
 
 }
 
-
 func Execute(symbol, side string, amount, offset int) {
 
 	switch repeat && freq > 0 {
@@ -126,7 +125,6 @@ func GetPrice(symbol string) {
 
 	fmt.Printf("%v: %v\n", p.Pair, p.Price)
 }
-
 
 func logger(logfile string) *log.Logger {
 	if logfile == "" {

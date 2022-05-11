@@ -12,7 +12,6 @@ var rootCmd = &cobra.Command{
 	Long:  "Use cGem to quickly buy and sell cryto on the Gemini Exchange",
 }
 
-
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
