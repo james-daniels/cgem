@@ -1,19 +1,20 @@
 package exec
 
 const (
-	production = "https://api.gemini.com"
-	sandbox    = "https://api.sandbox.gemini.com"
+	prodEnv = "https://api.gemini.com"
+	sandboxEnv    = "https://api.sandbox.gemini.com"
 
 	configFile = "config.ini"
 )
 
 var (
-	apikey    string
-	apisecret string
+	apiKey    string
+	apiSecret string
 	env       string
 	freq      int
 	iOffset   int
-	logfile   string
+	logFile   string
 	pretty    bool
 	repeat    bool
+	baseURL string
 )

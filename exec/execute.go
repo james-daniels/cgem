@@ -9,48 +9,25 @@ import (
 	"time"
 )
 
-func loadConfigFile() {
-	_, err := os.Stat(configFile)
-	if err != nil {
-		if os.IsNotExist(err) {
-			logger(logfile).Fatalln(configFile, "missing: run 'cgem init' to get started")
-		}
-	} else {
-		cfg, err := ini.Load(configFile)
-		errHandler(err)
-
-		env = cfg.Section("").Key("environment").String()
-		apikey = cfg.Section("credentials").Key("apikey").String()
-		apisecret = cfg.Section("credentials").Key("apisecret").String()
-		logfile = cfg.Section("logging").Key("logfile").String()
-		pretty, _ = cfg.Section("").Key("pretty").Bool()
-		iOffset, _ = cfg.Section("orders").Key("offset").Int()
-		repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
-		freq, _ = cfg.Section("recurrence").Key("frequency").Int()
-	}
-}
-
 func Execute(symbol, side string, amount, offset int) {
 
-	loadConfigFile()
-
-	baseurl := getEnv(env)
+	loadConfig()
 
 	switch repeat {
 	case true:
 		if freq <= 0 {
-			logger(logfile).Fatalln("enter frequency value greater than 0")
+			logger(logFile).Fatalln("enter frequency value greater than 0")
 		} else {
-			multiInst(symbol, side, baseurl, amount, offset)
+			multiInst(symbol, side, baseURL, amount, offset)
 		}
 	default:
-		oneInst(symbol, side, baseurl, amount, offset)
+		oneInst(symbol, side, baseURL, amount, offset)
 	}
 }
 
-func oneInst(symbol, side, baseurl string, amount, offset int) {
+func oneInst(symbol, side, baseURL string, amount, offset int) {
 
-	p, err := order.PriceFeed(symbol, baseurl)
+	p, err := order.PriceFeed(symbol, baseURL)
 	errHandler(err)
 
 	if iOffset != 0 {
@@ -62,26 +39,26 @@ func oneInst(symbol, side, baseurl string, amount, offset int) {
 	payload, err := order.PayloadBuilder(symbol, price, side, amount)
 	errHandler(err)
 
-	signature := order.SigBuilder(payload, apisecret)
+	signature := order.SigBuilder(payload, apiSecret)
 
-	response, err := order.NewOrder(baseurl, apikey, payload, signature)
+	response, err := order.NewOrder(baseURL, apiKey, payload, signature)
 	errHandler(err)
 
 	if pretty {
 		order.MakePretty(response)
-		logger(logfile).Printf("%+v\n", response)
+		logger(logFile).Printf("%+v\n", response)
 	} else {
 		fmt.Printf("%+v\n", response)
-		logger(logfile).Printf("%+v\n", response)
+		logger(logFile).Printf("%+v\n", response)
 	}
 }
 
-func multiInst(symbol, side, baseurl string, amount, offset int) {
+func multiInst(symbol, side, baseURL string, amount, offset int) {
 
-	logger(logfile).Println("app started")
+	logger(logFile).Println("app started")
 
 	for {
-		p, err := order.PriceFeed(symbol, baseurl)
+		p, err := order.PriceFeed(symbol, baseURL)
 		errHandler(err)
 
 		if iOffset != 0 {
@@ -93,12 +70,12 @@ func multiInst(symbol, side, baseurl string, amount, offset int) {
 		payload, err := order.PayloadBuilder(symbol, price, side, amount)
 		errHandler(err)
 
-		signature := order.SigBuilder(payload, apisecret)
+		signature := order.SigBuilder(payload, apiSecret)
 
-		response, err := order.NewOrder(baseurl, apikey, payload, signature)
+		response, err := order.NewOrder(baseURL, apiKey, payload, signature)
 		errHandler(err)
 
-		logger(logfile).Printf("%+v\n", response)
+		logger(logFile).Printf("%+v\n", response)
 
 		time.Sleep(time.Hour * time.Duration(freq))
 	}
@@ -106,23 +83,24 @@ func multiInst(symbol, side, baseurl string, amount, offset int) {
 
 func errHandler(err error) {
 	if err != nil {
-		logger(logfile).Fatalln(err)
+		logger(logFile).Fatalln(err)
 	}
 }
 
 func getEnv(env string) string {
+
 	switch env {
 	case "production":
-		return production
+		return prodEnv
 	default:
-		return sandbox
+		return sandboxEnv
 	}
 }
 
 func GetPrice(symbol string) {
-	baseurl := getEnv(env)
+	baseURL := getEnv(env)
 
-	p, err := order.PriceFeed(symbol, baseurl)
+	p, err := order.PriceFeed(symbol, baseURL)
 	errHandler(err)
 
 	fmt.Printf("\n%v: %v\n", p.Pair, p.Price)
@@ -138,4 +116,27 @@ func logger(logfile string) *log.Logger {
 	}
 
 	return log.New(file, "cgem: ", log.LstdFlags|log.Lshortfile)
+}
+
+func loadConfig() {
+
+	_, err := os.Stat(configFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			logger(logFile).Fatalln(configFile, "missing: run 'cgem init' to get started")
+		}
+	}
+	cfg, err := ini.Load(configFile)
+	errHandler(err)
+
+	env = cfg.Section("").Key("environment").String()
+	apiKey = cfg.Section("credentials").Key("apikey").String()
+	apiSecret = cfg.Section("credentials").Key("apisecret").String()
+	logFile = cfg.Section("logging").Key("logfile").String()
+	pretty, _ = cfg.Section("").Key("pretty").Bool()
+	iOffset, _ = cfg.Section("orders").Key("offset").Int()
+	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
+	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
+
+	baseURL = getEnv(env)
 }
