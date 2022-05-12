@@ -122,7 +122,7 @@ LTCUSD: 63.97
 
 ## Config file
 
-Run the init command to create the default config file. 
+Run the init command to create the default config file.
 
 ```bash
 $ ./cgem init
