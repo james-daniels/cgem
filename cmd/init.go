@@ -1,7 +1,3 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -17,8 +13,8 @@ const configFile = "config.ini"
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "init creates the default config file",
-	Long:  "init creates the default config file in the current binary location",
+	Short: "Init creates the default config file",
+	Long:  "Init creates the default config file in the current binary location",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		loadConfigFile()
