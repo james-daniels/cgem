@@ -15,7 +15,7 @@ $ ./cgem -h
 Use cGem to quickly buy and sell cryto on the Gemini Exchange
 
 Usage:
-  cGem [command]
+  cgem [command]
 
 Available Commands:
   buy         Buy side places order to buy crypto
@@ -25,9 +25,9 @@ Available Commands:
   sell        Sell side places order to sell crypto
 
 Flags:
-  -h, --help   help for cGem
+  -h, --help   help for cgem
 
-Use "cGem [command] --help" for more information about a command.
+Use "cgem [command] --help" for more information about a command.
 ```
 
 ## Easy process to buy
