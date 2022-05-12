@@ -154,5 +154,5 @@ apisecret = XXXXXXXXXXXXXXXXXXXX
 
 [logging]
 #Optional: path to log file location
-; logfile = "cgem.log"
+#logfile = "cgem.log"
 ```
