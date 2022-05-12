@@ -37,7 +37,7 @@ $ ./cgem buy -h
 Buy will fill part of the order it can immediately, then cancel any remaining amount.
 
 Usage:
-  cGem buy [flags]
+  cgem buy [flags]
 
 Flags:
   -a, --amount int      amount to buy
@@ -78,7 +78,7 @@ $ ./cgem sell -h
 Sell will fill part of the order it can immediately, then cancel any remaining amount.
 
 Usage:
-  cGem sell [flags]
+  cgem sell [flags]
 
 Flags:
   -a, --amount int      amount to sell
