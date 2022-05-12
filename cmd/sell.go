@@ -23,5 +23,5 @@ func init() {
 	sellCmd.MarkFlagRequired("symbol")
 	sellCmd.Flags().IntVarP(&amount, "amount", "a", 0, "amount to sell")
 	sellCmd.MarkFlagRequired("amount")
-	sellCmd.Flags().IntVarP(&offset, "offset", "o", 0, "amount to add")
+	sellCmd.Flags().IntVarP(&offset, "offset", "o", 0, "negative value to add to price")
 }

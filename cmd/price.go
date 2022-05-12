@@ -13,7 +13,6 @@ var priceCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		exec.GetPrice(symbol)
-
 	},
 }
 
