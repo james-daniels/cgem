@@ -122,7 +122,14 @@ LTCUSD: 63.97
 
 ## Config file
 
-The config file (config.ini) file is created in the same directory location as the executable.
+Run the init command to create the default config file. 
+
+```bash
+$ ./cgem init
+created config file: /gocode/src/github.com/james-daniels/cgem/config.ini
+```
+
+The config file (config.ini) is placed in the current working directory of the executable.
 
 ```ini
 #Possible values: sandbox and production
