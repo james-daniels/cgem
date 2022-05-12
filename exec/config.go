@@ -9,8 +9,8 @@ import (
 )
 
 type configBuilder struct {
-	Env string
-	APIKey string
+	Env       string
+	APIKey    string
 	APISecret string
 }
 
@@ -26,7 +26,7 @@ func (c *configBuilder) SetConfig(env, apiKey, apiSecret string) {
 
 func (c configBuilder) BuildConfig(conf *configBuilder) {
 
-	configTemplate :=`
+	configTemplate := `
 #Possible values: sandbox and production
 environment = {{.Env}}
 
