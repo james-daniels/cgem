@@ -6,8 +6,6 @@ A simple app which allows you to quickly buy and sell cryto on the Gemini Exchan
 
 ```bash
 git clone https://github.com/james-daniels/cgem.git
-
-cd cgem
 ```
 
 ```bash
