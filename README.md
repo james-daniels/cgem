@@ -122,7 +122,7 @@ LTCUSD: 63.97
 
 ## Config file
 
-The config.ini file needs be located in the same directory as the executable.
+The config file (config.ini) file needs be located in the same directory as the executable.
 
 ```ini
 #Possible values: sandbox and production
