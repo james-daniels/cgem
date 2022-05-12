@@ -6,6 +6,6 @@ const (
 )
 
 var (
-	oType = "exchange limit"
+	oType   = "exchange limit"
 	options = "immediate-or-cancel"
 )

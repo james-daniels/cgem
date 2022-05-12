@@ -1,30 +1,38 @@
 package exec
 
 import (
+	"cgem/order"
 	"fmt"
+	"gopkg.in/ini.v1"
 	"log"
 	"os"
 	"time"
-
-	"cgem/order"
-	"gopkg.in/ini.v1"
 )
 
-func init() {
-	cfg, err := ini.Load(configFile)
-	errHandler(err)
+func loadConfigFile() {
+	_, err := os.Stat(configFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			logger(logfile).Fatalln(configFile, "missing: run 'cgem init' to get started")
+		}
+	} else {
+		cfg, err := ini.Load(configFile)
+		errHandler(err)
 
-	env = cfg.Section("").Key("environment").String()
-	apikey = cfg.Section("credentials").Key("apikey").String()
-	apisecret = cfg.Section("credentials").Key("apisecret").String()
-	logfile = cfg.Section("logging").Key("logfile").String()
-	pretty, _ = cfg.Section("").Key("pretty").Bool()
-	iOffset, _ = cfg.Section("orders").Key("offset").Int()
-	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
-	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
+		env = cfg.Section("").Key("environment").String()
+		apikey = cfg.Section("credentials").Key("apikey").String()
+		apisecret = cfg.Section("credentials").Key("apisecret").String()
+		logfile = cfg.Section("logging").Key("logfile").String()
+		pretty, _ = cfg.Section("").Key("pretty").Bool()
+		iOffset, _ = cfg.Section("orders").Key("offset").Int()
+		repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
+		freq, _ = cfg.Section("recurrence").Key("frequency").Int()
+	}
 }
 
 func Execute(symbol, side string, amount, offset int) {
+
+	loadConfigFile()
 
 	baseurl := getEnv(env)
 
@@ -124,10 +132,10 @@ func logger(logfile string) *log.Logger {
 	if logfile == "" {
 		logfile = "cgem.log"
 	}
-	o, err := os.OpenFile(logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	return log.New(o, "cgem: ", log.LstdFlags|log.Lshortfile)
+	return log.New(file, "cgem: ", log.LstdFlags|log.Lshortfile)
 }
