@@ -19,7 +19,6 @@ Usage:
 
 Available Commands:
   buy         Buy side places order to buy crypto
-  completion  Generate the autocompletion script for the specified shell
   help        Help about any command
   init        Init creates the default config file
   price       Price of trading pair
