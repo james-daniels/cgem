@@ -17,8 +17,8 @@ const configFile = "config.ini"
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "A brief description of your command",
-	Long:  "this is the init command",
+	Short: "init creates the default config file",
+	Long:  "init creates the default config file in the current binary location",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		loadConfigFile()
