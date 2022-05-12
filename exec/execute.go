@@ -117,7 +117,7 @@ func GetPrice(symbol string) {
 	p, err := order.PriceFeed(symbol, baseurl)
 	errHandler(err)
 
-	fmt.Printf("%v: %v\n", p.Pair, p.Price)
+	fmt.Printf("\n%v: %v\n", p.Pair, p.Price)
 }
 
 func logger(logfile string) *log.Logger {
