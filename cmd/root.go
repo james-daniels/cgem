@@ -7,7 +7,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "cGem",
+	Use:   "cgem",
 	Short: "Use cGem to buy and sell crypto",
 	Long:  "Use cGem to quickly buy and sell cryto on the Gemini Exchange",
 }
