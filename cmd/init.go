@@ -5,11 +5,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/spf13/cobra"
 )
-
-const configFile = "config.ini"
 
 var initCmd = &cobra.Command{
 	Use:   "init",
@@ -17,36 +16,69 @@ var initCmd = &cobra.Command{
 	Long:  "Init creates the default config file in the current binary location",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		loadConfigFile()
+		conf := newConfigBuilder()
+		conf.setEnvironment(env)
+		conf.setAPIKey(apiKey)
+		conf.setAPISecret(apiSecret)
+		buildConfig(conf)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(initCmd)
+
+	initCmd.Flags().StringVarP(&env, "env", "e", "", "enter the environment values: sandbox or production")
+	initCmd.MarkFlagRequired("env")
+	initCmd.Flags().StringVarP(&apiKey, "key", "k", "", "enter the api key")
+	initCmd.MarkFlagRequired("key")
+	initCmd.Flags().StringVarP(&apiSecret, "secret", "s", "", "enter the api secret")
+	initCmd.MarkFlagRequired("secret")
 }
 
-func loadConfigFile() {
+type configBuilder struct {
+	Environment string
+	APIKey string
+	APISecret string
+}
+
+func newConfigBuilder() *configBuilder {
+	return &configBuilder{}
+}
+
+func (c *configBuilder) setEnvironment(env string) {
+	c.Environment = env
+}
+
+func (c *configBuilder) setAPIKey(apiKey string) {
+	c.APIKey = apiKey
+}
+
+func (c *configBuilder) setAPISecret(apiSecret string) {
+	c.APISecret = apiSecret
+}
+
+func buildConfig(c *configBuilder) {
 
 	configTemplate := `
 #Possible values: sandbox and production
-environment = sandbox
+environment = {{.Environment}}
 
 #Optional: Present output in human readable format
 #Only available for single run jobs
-#pretty = true
+pretty = true
 
 [credentials]
 #API key and secret
-apikey = account-XXXXXXXXXXXXXXXXXXXX
-apisecret = XXXXXXXXXXXXXXXXXXXX
+apikey = {{.APIKey}}
+apisecret = {{.APISecret}}
 
 [recurrence]
 #Optional: Only for recurring jobs
-#repeat = false
+repeat = false
 
 #Dependent on repeat = true
 #Number of hours between runs
-#frequency = 0
+frequency = 0
 
 [orders]
 #Default value is 0
@@ -59,15 +91,20 @@ apisecret = XXXXXXXXXXXXXXXXXXXX
 #Optional: path to log file location
 #logfile = "cgem.log"
 `
-	file, err := os.OpenFile(configFile, os.O_CREATE|os.O_WRONLY, 0644)
+
+	f, err := os.OpenFile(configFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer file.Close()
+	defer f.Close()
 
-	file.Write([]byte(configTemplate))
+	t := template.Must(template.New("configTemplate").Parse(configTemplate))
+	err = t.Execute(f, c)
+	if err != nil {
+		log.Println("an error has occured with config template")
+	}
 
-	fAbs, err := filepath.Abs(file.Name())
+	fAbs, err := filepath.Abs(f.Name())
 	if err != nil {
 		log.Fatalln(err)
 	}

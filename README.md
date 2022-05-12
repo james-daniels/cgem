@@ -122,10 +122,24 @@ LTCUSD: 63.97
 
 ## Config file
 
+```bash
+$ ./cgem init -h
+Init creates the default config file in the current binary location
+
+Usage:
+  cgem init [flags]
+
+Flags:
+  -e, --env string      enter the environment values: sandbox or production
+  -h, --help            help for init
+  -k, --key string      enter the api key
+  -s, --secret string   enter the api secret
+```
+
 Run the init command to create the default config file. The config file (config.ini) is placed in the current working directory of the executable.
 
 ```bash
-$ ./cgem init
+./cgem init -e sandbox -k key-XXXXXXXXXXXXXXXXXXXX -s secret-XXXXXXXXXXXXXXXXXXXX
 created config file: /gocode/src/github.com/james-daniels/cgem/config.ini
 ```
 
@@ -135,20 +149,20 @@ environment = sandbox
 
 #Optional: Present output in human readable format
 #Only available for single run jobs
-#pretty = true
+pretty = true
 
 [credentials]
 #API key and secret
-apikey = account-XXXXXXXXXXXXXXXXXXXX
-apisecret = XXXXXXXXXXXXXXXXXXXX
+apikey = key-XXXXXXXXXXXXXXXXXXXX
+apisecret = secret-XXXXXXXXXXXXXXXXXXXX
 
 [recurrence]
 #Optional: Only for recurring jobs
-#repeat = false
+repeat = false
 
 #Dependent on repeat = true
 #Number of hours between runs
-#frequency = 0
+frequency = 0
 
 [orders]
 #Default value is 0
