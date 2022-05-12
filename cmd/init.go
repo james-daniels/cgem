@@ -34,7 +34,7 @@ func init() {
 }
 
 type configBuilder struct {
-	Environment string
+	Env string
 	APIKey string
 	APISecret string
 }
@@ -44,7 +44,7 @@ func newConfigBuilder() *configBuilder {
 }
 
 func (c *configBuilder) setConfig(env, apiKey, apiSecret string) {
-	c.Environment = env
+	c.Env = env
 	c.APIKey = apiKey
 	c.APISecret = apiSecret
 }
@@ -53,7 +53,7 @@ func buildConfig(c *configBuilder) {
 
 	configTemplate :=`
 #Possible values: sandbox and production
-environment = {{.Environment}}
+environment = {{.Env}}
 
 #Optional: Present output in human readable format
 #Only available for single run jobs
