@@ -1,8 +1,8 @@
 package exec
 
 const (
-	prodEnv = "https://api.gemini.com"
-	sandboxEnv    = "https://api.sandbox.gemini.com"
+	prodEnv    = "https://api.gemini.com"
+	sandboxEnv = "https://api.sandbox.gemini.com"
 
 	configFile = "config.ini"
 )
@@ -16,5 +16,5 @@ var (
 	logFile   string
 	pretty    bool
 	repeat    bool
-	baseURL string
+	baseURL   string
 )

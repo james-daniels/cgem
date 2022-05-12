@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"	
+	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
