@@ -17,9 +17,7 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		conf := newConfigBuilder()
-		conf.setEnvironment(env)
-		conf.setAPIKey(apiKey)
-		conf.setAPISecret(apiSecret)
+		conf.setConfig(env, apiKey, apiSecret)
 		buildConfig(conf)
 	},
 }
@@ -45,21 +43,15 @@ func newConfigBuilder() *configBuilder {
 	return &configBuilder{}
 }
 
-func (c *configBuilder) setEnvironment(env string) {
+func (c *configBuilder) setConfig(env, apiKey, apiSecret string) {
 	c.Environment = env
-}
-
-func (c *configBuilder) setAPIKey(apiKey string) {
 	c.APIKey = apiKey
-}
-
-func (c *configBuilder) setAPISecret(apiSecret string) {
 	c.APISecret = apiSecret
 }
 
 func buildConfig(c *configBuilder) {
 
-	configTemplate := `
+	configTemplate :=`
 #Possible values: sandbox and production
 environment = {{.Environment}}
 
