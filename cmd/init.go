@@ -71,6 +71,9 @@ apisecret = XXXXXXXXXXXXXXXXXXXX
 
 	file.Write([]byte(configTemplate))
 
-	fAbs, _ := filepath.Abs(file.Name())
+	fAbs, err := filepath.Abs(file.Name())
+	if err != nil {
+		log.Fatalln(err)
+	}
 	fmt.Println("created config file:", fAbs)
 }
