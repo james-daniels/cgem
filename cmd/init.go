@@ -61,7 +61,7 @@ apisecret = XXXXXXXXXXXXXXXXXXXX
 
 [logging]
 #Optional: path to log file location
-; logfile = "cgem.log"
+#logfile = "cgem.log"
 `
 	file, err := os.OpenFile(configFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
