@@ -42,7 +42,7 @@ Usage:
 Flags:
   -a, --amount int      amount to buy
   -h, --help            help for buy
-  -o, --offset int      amount to add to price
+  -o, --offset int      positive value to add to price
   -s, --symbol string   symbol of the trading pair
 ```
 
@@ -83,7 +83,7 @@ Usage:
 Flags:
   -a, --amount int      amount to sell
   -h, --help            help for sell
-  -o, --offset int      amount to add
+  -o, --offset int      negative value to add to price
   -s, --symbol string   symbol of the trading pair
 ```
 
