@@ -30,6 +30,18 @@ Use "cgem [command] --help" for more information about a command.
 
 ## Get the price of your favorite crypto
 
+```text
+$ ./cgem price -h
+Get the price of trading pair by providing the symbol
+
+Usage:
+  cgem price [flags]
+
+Flags:
+  -h, --help            help for price
+  -s, --symbol string   SYMBOL: symbol of the trading pair
+```
+
 [All supported symbols](https://docs.gemini.com/rest-api/?python#all-supported-symbols)
 
 ```text
