@@ -1,6 +1,6 @@
 # cGem
 
-A simple app which allows you to quickly buy and sell cryto on the Gemini Exchange.
+A simple app which allows you to quickly buy and sell cryto on the [Gemini Exchange](https://www.gemini.com/exchange). Development details can be found in the [Gemini API Document](https://docs.gemini.com/rest-api/?python#new-order).
 
 ## Clone and Install
 
