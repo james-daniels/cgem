@@ -105,9 +105,9 @@ func SigBuilder(payload string) string {
 	return signature
 }
 
-func NewOrder(baseurl, payload, signature string) (newResponse, error) {
+func NewOrder(baseURL, payload, signature string) (newResponse, error) {
 
-	url := baseurl + newOrderEndpoint
+	url := baseURL + newOrderEndpoint
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
