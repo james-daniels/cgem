@@ -131,8 +131,6 @@ func loadConfig() {
 	errHandler(err)
 
 	env = cfg.Section("").Key("environment").String()
-	// apiKey = cfg.Section("credentials").Key("apikey").String()
-	// apiSecret = cfg.Section("credentials").Key("apisecret").String()
 	logFile = cfg.Section("logging").Key("logfile").String()
 	pretty, _ = cfg.Section("").Key("pretty").Bool()
 	iOffset, _ = cfg.Section("orders").Key("offset").Int()
