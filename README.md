@@ -28,6 +28,16 @@ Flags:
 Use "cgem [command] --help" for more information about a command.
 ```
 
+## Get the price of your favorite crypto
+
+[All supported symbols](https://docs.gemini.com/rest-api/?python#all-supported-symbols)
+
+```text
+$ ./cgem price -s ltcusd
+
+LTCUSD: 63.97
+```
+
 ## Easy process to buy
 
 ```text
@@ -108,14 +118,6 @@ Options:                [immediate-or-cancel]
 StopPrice:
 Price:                  58.88
 OriginalAmount:         1
-```
-
-## Get the price of your favorite crypto
-
-```text
-$ ./cgem price -s ltcusd
-
-LTCUSD: 63.97
 ```
 
 ## Config file
