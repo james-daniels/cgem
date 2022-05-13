@@ -89,19 +89,9 @@ func errHandler(err error) {
 	}
 }
 
-func getEnv(env string) string {
-
-	switch env {
-	case "production":
-		return prodEnv
-	default:
-		return sandboxEnv
-	}
-}
-
 func GetPrice(symbol string) {
 
-	p, err := order.PriceFeed(symbol, getEnv(env))
+	p, err := order.PriceFeed(symbol, conf.GetEnv(env))
 	errHandler(err)
 
 	fmt.Printf("\n%v: %v\n", p.Pair, p.Price)
@@ -139,5 +129,5 @@ func loadConfig() {
 	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
 	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
 
-	baseURL = getEnv(env)
+	baseURL = conf.GetEnv(env)
 }

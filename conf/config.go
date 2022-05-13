@@ -9,6 +9,9 @@ import (
 )
 
 const (
+	prodEnv    = "https://api.gemini.com"
+	sandboxEnv = "https://api.sandbox.gemini.com"
+
 	ConfigFile = "config.ini"
 )
 
@@ -80,4 +83,14 @@ frequency = 0
 		log.Fatalln(err)
 	}
 	fmt.Println("created config file:", fAbs)
+}
+
+func GetEnv(env string) string {
+
+	switch env {
+	case "production":
+		return prodEnv
+	default:
+		return sandboxEnv
+	}
 }

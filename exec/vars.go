@@ -1,10 +1,5 @@
 package exec
 
-const (
-	prodEnv    = "https://api.gemini.com"
-	sandboxEnv = "https://api.sandbox.gemini.com"
-)
-
 var (
 	apiKey    string
 	apiSecret string
