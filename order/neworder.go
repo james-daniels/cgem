@@ -12,7 +12,18 @@ import (
 	"os"
 	"text/template"
 	"time"
+
+	"gopkg.in/ini.v1"
 )
+
+func init() {
+	cfg, err := ini.Load(configFile)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	apiKey = cfg.Section("credentials").Key("apikey").String()
+	apiSecret = cfg.Section("credentials").Key("apisecret").String()
+}
 
 type newPayload struct {
 	Request string   `json:"request"`
@@ -70,9 +81,9 @@ func PayloadBuilder(symbol, price, side string, amount int) (string, error) {
 	return payload, nil
 }
 
-func SigBuilder(payload, apisecret string) string {
+func SigBuilder(payload string) string {
 
-	h := hmac.New(sha512.New384, []byte(apisecret))
+	h := hmac.New(sha512.New384, []byte(apiSecret))
 	h.Write([]byte(payload))
 
 	signature := hex.EncodeToString(h.Sum(nil))
@@ -80,7 +91,7 @@ func SigBuilder(payload, apisecret string) string {
 	return signature
 }
 
-func NewOrder(baseurl, apikey, payload, signature string) (newResponse, error) {
+func NewOrder(baseurl, payload, signature string) (newResponse, error) {
 
 	url := baseurl + newOrderEndpoint
 
@@ -90,7 +101,7 @@ func NewOrder(baseurl, apikey, payload, signature string) (newResponse, error) {
 	}
 	req.Header.Set("Content-Type", "text/plain")
 	req.Header.Add("Content-Length", "0")
-	req.Header.Add("X-GEMINI-APIKEY", apikey)
+	req.Header.Add("X-GEMINI-APIKEY", apiKey)
 	req.Header.Add("X-GEMINI-PAYLOAD", payload)
 	req.Header.Add("X-GEMINI-SIGNATURE", signature)
 	req.Header.Add("Cache-Control", "no-cache")
@@ -138,7 +149,6 @@ StopPrice:		{{.StopPrice}}
 Price:			{{.Price}}
 OriginalAmount:		{{.OriginalAmount}}
 `
-
 	t := template.Must(template.New("respTemplate").Parse(respTemplate))
 	err := t.Execute(os.Stdout, r)
 	if err != nil {

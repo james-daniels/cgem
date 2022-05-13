@@ -3,10 +3,11 @@ package exec
 import (
 	"cgem/order"
 	"fmt"
-	"gopkg.in/ini.v1"
 	"log"
 	"os"
 	"time"
+
+	"gopkg.in/ini.v1"
 )
 
 func Execute(symbol, side string, amount, offset int) {
@@ -39,9 +40,9 @@ func oneInst(symbol, side, baseURL string, amount, offset int) {
 	payload, err := order.PayloadBuilder(symbol, price, side, amount)
 	errHandler(err)
 
-	signature := order.SigBuilder(payload, apiSecret)
+	signature := order.SigBuilder(payload)
 
-	response, err := order.NewOrder(baseURL, apiKey, payload, signature)
+	response, err := order.NewOrder(baseURL, payload, signature)
 	errHandler(err)
 
 	if pretty {
@@ -70,9 +71,9 @@ func multiInst(symbol, side, baseURL string, amount, offset int) {
 		payload, err := order.PayloadBuilder(symbol, price, side, amount)
 		errHandler(err)
 
-		signature := order.SigBuilder(payload, apiSecret)
+		signature := order.SigBuilder(payload)
 
-		response, err := order.NewOrder(baseURL, apiKey, payload, signature)
+		response, err := order.NewOrder(baseURL, payload, signature)
 		errHandler(err)
 
 		logger(logFile).Printf("%+v\n", response)
@@ -130,8 +131,8 @@ func loadConfig() {
 	errHandler(err)
 
 	env = cfg.Section("").Key("environment").String()
-	apiKey = cfg.Section("credentials").Key("apikey").String()
-	apiSecret = cfg.Section("credentials").Key("apisecret").String()
+	// apiKey = cfg.Section("credentials").Key("apikey").String()
+	// apiSecret = cfg.Section("credentials").Key("apisecret").String()
 	logFile = cfg.Section("logging").Key("logfile").String()
 	pretty, _ = cfg.Section("").Key("pretty").Bool()
 	iOffset, _ = cfg.Section("orders").Key("offset").Int()

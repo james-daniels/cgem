@@ -14,9 +14,9 @@ type newPrice struct {
 	PercentageChange24h string `json:"percentChange24h"`
 }
 
-func PriceFeed(symbol, baseurl string) (*newPrice, error) {
+func PriceFeed(symbol, baseURL string) (*newPrice, error) {
 
-	url := baseurl + priceFeedEndpoint
+	url := baseURL + priceFeedEndpoint
 
 	resp, err := http.Get(url)
 	if err != nil {
