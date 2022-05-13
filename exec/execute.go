@@ -1,6 +1,7 @@
 package exec
 
 import (
+	"cgem/conf"
 	"cgem/order"
 	"fmt"
 	"log"
@@ -40,9 +41,9 @@ func oneInst(symbol, side, baseURL string, amount, offset int) {
 	payload, err := order.PayloadBuilder(symbol, price, side, amount)
 	errHandler(err)
 
-	signature := order.SigBuilder(payload)
+	signature := order.SigBuilder(payload, apiSecret)
 
-	response, err := order.NewOrder(baseURL, payload, signature)
+	response, err := order.NewOrder(baseURL, payload, apiKey, signature)
 	errHandler(err)
 
 	if pretty {
@@ -71,9 +72,9 @@ func multiInst(symbol, side, baseURL string, amount, offset int) {
 		payload, err := order.PayloadBuilder(symbol, price, side, amount)
 		errHandler(err)
 
-		signature := order.SigBuilder(payload)
+		signature := order.SigBuilder(payload, apiSecret)
 
-		response, err := order.NewOrder(baseURL, payload, signature)
+		response, err := order.NewOrder(baseURL, payload, apiKey, signature)
 		errHandler(err)
 
 		logger(logFile).Printf("%+v\n", response)
@@ -99,9 +100,8 @@ func getEnv(env string) string {
 }
 
 func GetPrice(symbol string) {
-	baseURL := getEnv(env)
 
-	p, err := order.PriceFeed(symbol, baseURL)
+	p, err := order.PriceFeed(symbol, getEnv(env))
 	errHandler(err)
 
 	fmt.Printf("\n%v: %v\n", p.Pair, p.Price)
@@ -121,15 +121,17 @@ func logger(logfile string) *log.Logger {
 
 func loadConfig() {
 
-	_, err := os.Stat(configFile)
+	_, err := os.Stat(conf.ConfigFile)
 	if err != nil {
 		if os.IsNotExist(err) {
-			logger(logFile).Fatalln(configFile, "missing: run 'cgem init' to get started")
+			logger(logFile).Fatalln(conf.ConfigFile, "missing: run 'cgem init' to get started")
 		}
 	}
-	cfg, err := ini.Load(configFile)
+	cfg, err := ini.Load(conf.ConfigFile)
 	errHandler(err)
 
+	apiKey = cfg.Section("credentials").Key("apikey").String()
+	apiSecret = cfg.Section("credentials").Key("apisecret").String()
 	env = cfg.Section("").Key("environment").String()
 	logFile = cfg.Section("logging").Key("logfile").String()
 	pretty, _ = cfg.Section("").Key("pretty").Bool()

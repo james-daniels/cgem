@@ -1,4 +1,4 @@
-package exec
+package conf
 
 import (
 	"fmt"
@@ -6,6 +6,10 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
+)
+
+const (
+	ConfigFile = "config.ini"
 )
 
 type configBuilder struct {
@@ -59,7 +63,7 @@ frequency = 0
 #logfile = "cgem.log"
 `
 
-	f, err := os.OpenFile(configFile, os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(ConfigFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}

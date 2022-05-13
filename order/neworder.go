@@ -12,32 +12,16 @@ import (
 	"os"
 	"text/template"
 	"time"
-
-	"gopkg.in/ini.v1"
 )
 
 const (
 	newOrderEndpoint = "/v1/order/new"
-
-	configFile = "config.ini"
 )
 
 var (
-	apiKey    string
-	apiSecret string
-
 	oType   = "exchange limit"
 	options = "immediate-or-cancel"
 )
-
-func init() {
-	cfg, err := ini.Load(configFile)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	apiKey = cfg.Section("credentials").Key("apikey").String()
-	apiSecret = cfg.Section("credentials").Key("apisecret").String()
-}
 
 type newPayload struct {
 	Request string   `json:"request"`
@@ -95,7 +79,7 @@ func PayloadBuilder(symbol, price, side string, amount int) (string, error) {
 	return payload, nil
 }
 
-func SigBuilder(payload string) string {
+func SigBuilder(payload, apiSecret string) string {
 
 	h := hmac.New(sha512.New384, []byte(apiSecret))
 	h.Write([]byte(payload))
@@ -105,7 +89,7 @@ func SigBuilder(payload string) string {
 	return signature
 }
 
-func NewOrder(baseURL, payload, signature string) (newResponse, error) {
+func NewOrder(baseURL, payload, apiKey, signature string) (newResponse, error) {
 
 	url := baseURL + newOrderEndpoint
 

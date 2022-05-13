@@ -1,11 +1,5 @@
 package cmd
 
-const (
-	bside      = "buy"
-	sside      = "sell"
-	configFile = "config.ini"
-)
-
 var (
 	amount    int
 	offset    int

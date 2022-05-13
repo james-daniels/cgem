@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"cgem/exec"
+	"cgem/conf"
 
 	"github.com/spf13/cobra"
 )
@@ -12,9 +12,9 @@ var initCmd = &cobra.Command{
 	Long:  "Init creates the default config file in the current binary location",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		conf := exec.NewConfigBuilder()
-		conf.SetConfig(env, apiKey, apiSecret)
-		conf.BuildConfig(conf)
+		config := conf.NewConfigBuilder()
+		config.SetConfig(env, apiKey, apiSecret)
+		config.BuildConfig(config)
 	},
 }
 

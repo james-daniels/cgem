@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	sside = "sell"
+)
+
 var sellCmd = &cobra.Command{
 	Use:   "sell",
 	Short: "Sell side places order to sell crypto",
