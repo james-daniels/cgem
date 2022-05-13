@@ -83,12 +83,6 @@ func multiInst(symbol, side, baseURL string, amount, offset int) {
 	}
 }
 
-func errHandler(err error) {
-	if err != nil {
-		logger(logFile).Fatalln(err)
-	}
-}
-
 func GetPrice(symbol string) {
 
 	p, err := order.PriceFeed(symbol, conf.GetEnv(env))
@@ -130,4 +124,10 @@ func loadConfig() {
 	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
 
 	baseURL = conf.GetEnv(env)
+}
+
+func errHandler(err error) {
+	if err != nil {
+		logger(logFile).Fatalln(err)
+	}
 }

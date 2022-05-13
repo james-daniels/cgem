@@ -4,11 +4,11 @@ A simple app which allows you to quickly buy and sell cryto on the Gemini Exchan
 
 ## Clone and Install
 
-```bash
+```text
 git clone https://github.com/james-daniels/cgem.git
 ```
 
-```bash
+```text
 $ ./cgem -h
 Use cGem to quickly buy and sell cryto on the Gemini Exchange
 
@@ -30,7 +30,7 @@ Use "cgem [command] --help" for more information about a command.
 
 ## Easy process to buy
 
-```bash
+```text
 $ ./cgem buy -h
 Buy will fill part of the order it can immediately, then cancel any remaining amount.
 
@@ -46,7 +46,7 @@ Flags:
 
 The default value for --offset is zero (0) and is optional. However, in order to fill an order, the offset value to increase the purchase price aggressive enough to fill the order.
 
-```bash
+```text
 $ ./cgem buy -s ltcusd -a 1 -o 5
 
 OrderID:                1772530063
@@ -71,7 +71,7 @@ OriginalAmount:         1
 
 ## Easy process to sell
 
-```Bash
+```text
 $ ./cgem sell -h
 Sell will fill part of the order it can immediately, then cancel any remaining amount.
 
@@ -87,7 +87,7 @@ Flags:
 
 Reverse the buy process to sell.  Offset needs to be negative value which is added to the sell price.
 
-```bash
+```text
 $ ./cgem sell -s ltcusd -a 1 -o -5
 
 OrderID:                1772532056
@@ -112,7 +112,7 @@ OriginalAmount:         1
 
 ## Get the price of your favorite crypto
 
-```bash,
+```text
 $ ./cgem price -s ltcusd
 
 LTCUSD: 63.97
@@ -120,7 +120,7 @@ LTCUSD: 63.97
 
 ## Config file
 
-```bash
+```text
 $ ./cgem init -h
 Init creates the default config file in the current binary location
 
@@ -136,12 +136,12 @@ Flags:
 
 Run the init command to create the default config file. The config file (config.ini) is placed in the current working directory of the executable.
 
-```bash
+```text
 ./cgem init -e sandbox -k key-XXXXXXXXXXXXXXXXXXXX -s secret-XXXXXXXXXXXXXXXXXXXX
 created config file: /gocode/src/github.com/james-daniels/cgem/config.ini
 ```
 
-```ini
+```text
 #Possible values: sandbox and production
 environment = sandbox
 
