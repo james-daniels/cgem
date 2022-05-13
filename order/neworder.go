@@ -16,6 +16,20 @@ import (
 	"gopkg.in/ini.v1"
 )
 
+const (
+	newOrderEndpoint  = "/v1/order/new"
+
+	configFile = "config.ini"
+)
+
+var (
+	apiKey    string
+	apiSecret string
+
+	oType   = "exchange limit"
+	options = "immediate-or-cancel"
+)
+
 func init() {
 	cfg, err := ini.Load(configFile)
 	if err != nil {

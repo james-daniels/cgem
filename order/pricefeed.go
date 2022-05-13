@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+const (
+	priceFeedEndpoint = "/v1/pricefeed"
+)
+
 type newPrice struct {
 	Pair                string `json:"pair"`
 	Price               string `json:"price"`
