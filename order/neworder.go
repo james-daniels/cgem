@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	newOrderEndpoint  = "/v1/order/new"
+	newOrderEndpoint = "/v1/order/new"
 
 	configFile = "config.ini"
 )
