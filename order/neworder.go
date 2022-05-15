@@ -89,7 +89,7 @@ func SigBuilder(payload, apiSecret string) string {
 	return signature
 }
 
-func NewOrder(baseURL, payload, apiKey, signature string) (newResponse, error) {
+func New(baseURL, payload, apiKey, signature string) (newResponse, error) {
 
 	url := baseURL + newOrderEndpoint
 

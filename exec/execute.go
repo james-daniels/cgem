@@ -43,7 +43,7 @@ func oneInst(symbol, side string, amount, offset int) {
 
 	signature := order.SigBuilder(payload, c.APISecret)
 
-	response, err := order.NewOrder(c.BaseURL, payload, c.APIKey, signature)
+	response, err := order.New(c.BaseURL, payload, c.APIKey, signature)
 	errHandler(c.LogFile, err)
 
 	if c.Pretty {
@@ -76,7 +76,7 @@ func multiInst(symbol, side string, amount, offset int) {
 
 		signature := order.SigBuilder(payload, c.APISecret)
 
-		response, err := order.NewOrder(c.BaseURL, payload, c.APIKey, signature)
+		response, err := order.New(c.BaseURL, payload, c.APIKey, signature)
 		errHandler(c.LogFile, err)
 
 		logger(c.LogFile).Printf("%+v\n", response)
