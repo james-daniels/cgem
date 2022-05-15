@@ -14,7 +14,7 @@ var initCmd = &cobra.Command{
 
 		config := conf.Builder()
 		config.Set(env, apiKey, apiSecret)
-		config.Build(config)
+		conf.Build(config)
 	},
 }
 

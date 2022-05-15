@@ -36,7 +36,7 @@ func (c *configBuilder) Set(env, apiKey, apiSecret string) {
 	c.APISecret = apiSecret
 }
 
-func (c configBuilder) Build(conf *configBuilder) {
+func Build(conf *configBuilder) {
 
 	configTemplate := `
 #Possible values: sandbox and production
