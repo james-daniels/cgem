@@ -18,7 +18,7 @@ type newPrice struct {
 	PercentageChange24h string `json:"percentChange24h"`
 }
 
-func PriceFeed(symbol, baseURL string) (*newPrice, error) {
+func GetPrice(symbol, baseURL string) (*newPrice, error) {
 
 	url := baseURL + priceFeedEndpoint
 
@@ -51,7 +51,7 @@ func PriceFeed(symbol, baseURL string) (*newPrice, error) {
 	return nil, fmt.Errorf("could not find trading pair '%v'", symbol)
 }
 
-func PriceOffset(price string, offset int) (string, error) {
+func SetPrice(price string, offset int) (string, error) {
 	p, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return "", fmt.Errorf("string convert parse float ecountered an error: %v", err)

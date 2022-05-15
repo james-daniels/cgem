@@ -29,13 +29,13 @@ func oneInst(symbol, side string, amount, offset int) {
 
 	c := conf.Get()
 
-	p, err := order.PriceFeed(symbol, c.BaseURL)
+	p, err := order.GetPrice(symbol, c.BaseURL)
 	errHandler(c.LogFile, err)
 
 	if c.Offset != 0 {
 		offset = c.Offset
 	}
-	price, err := order.PriceOffset(p.Price, offset)
+	price, err := order.SetPrice(p.Price, offset)
 	errHandler(c.LogFile, err)
 
 	payload, err := order.PayloadBuilder(symbol, price, side, amount)
@@ -62,13 +62,13 @@ func multiInst(symbol, side string, amount, offset int) {
 	logger(c.LogFile).Println("app started")
 
 	for {
-		p, err := order.PriceFeed(symbol, c.BaseURL)
+		p, err := order.GetPrice(symbol, c.BaseURL)
 		errHandler(c.LogFile, err)
 
 		if c.Offset != 0 {
 			offset = c.Offset
 		}
-		price, err := order.PriceOffset(p.Price, offset)
+		price, err := order.SetPrice(p.Price, offset)
 		errHandler(c.LogFile, err)
 
 		payload, err := order.PayloadBuilder(symbol, price, side, amount)
@@ -88,7 +88,7 @@ func multiInst(symbol, side string, amount, offset int) {
 func GetPrice(symbol string) {
 	c := conf.Get()
 
-	p, err := order.PriceFeed(symbol, c.BaseURL)
+	p, err := order.GetPrice(symbol, c.BaseURL)
 	errHandler(c.LogFile, err)
 
 	fmt.Printf("\n%v: %v\n", p.Pair, p.Price)
