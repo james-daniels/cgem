@@ -90,19 +90,14 @@ frequency = 0
 	fmt.Println("created config file:", fAbs)
 }
 
-func getEnv(env string) string {
-
-	switch env {
-	case "production":
-		return "https://api.gemini.com"
-	case "sandbox":
-		return "https://api.sandbox.gemini.com"
-	default:
-		return "enter a valid environment: sandbox or production"
-	}
-}
-
 func Get() *config {
+
+	_, err := os.Stat(configFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			log.Fatalln(configFile, "missing: run 'cgem init' to get started")
+		}
+	}
 
 	var (
 		apiKey    string
@@ -115,17 +110,10 @@ func Get() *config {
 		repeat    bool
 	)
 
-	_, err := os.Stat(configFile)
-	if err != nil {
-		if os.IsNotExist(err) {
-			log.Fatalln(configFile, "missing: run 'cgem init' to get started")
-		}
-	}
 	cfg, err := ini.Load(configFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	apiKey = cfg.Section("credentials").Key("apikey").String()
 	apiSecret = cfg.Section("credentials").Key("apisecret").String()
 	env = cfg.Section("").Key("environment").String()
@@ -148,5 +136,17 @@ func Get() *config {
 		Pretty:    pretty,
 		Repeat:    repeat,
 		BaseURL:   getEnv(env),
+	}
+}
+
+func getEnv(env string) string {
+
+	switch env {
+	case "production":
+		return "https://api.gemini.com"
+	case "sandbox":
+		return "https://api.sandbox.gemini.com"
+	default:
+		return "enter a valid environment: sandbox or production"
 	}
 }
