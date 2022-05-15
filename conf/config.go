@@ -14,7 +14,7 @@ const (
 	configFile = "config.ini"
 )
 
-type configBuilder struct {
+type config struct {
 	Env       string
 	APIKey    string
 	APISecret string
@@ -26,17 +26,17 @@ type configBuilder struct {
 	BaseURL   string
 }
 
-func Builder() *configBuilder {
-	return &configBuilder{}
+func Builder() *config {
+	return &config{}
 }
 
-func (c *configBuilder) Set(env, apiKey, apiSecret string) {
+func (c *config) Set(env, apiKey, apiSecret string) {
 	c.Env = env
 	c.APIKey = apiKey
 	c.APISecret = apiSecret
 }
 
-func Build(conf *configBuilder) {
+func Build(conf *config) {
 
 	configTemplate := `
 #Possible values: sandbox and production
@@ -102,7 +102,7 @@ func getEnv(env string) string {
 	}
 }
 
-func Get() *configBuilder {
+func Get() *config {
 
 	var (
 		apiKey    string
@@ -138,7 +138,7 @@ func Get() *configBuilder {
 	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
 	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
 
-	return &configBuilder{
+	return &config{
 		Env:       env,
 		APIKey:    apiKey,
 		APISecret: apiSecret,
