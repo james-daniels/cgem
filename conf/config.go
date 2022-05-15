@@ -6,32 +6,37 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"gopkg.in/ini.v1"
 )
 
 const (
-	prodEnv    = "https://api.gemini.com"
-	sandboxEnv = "https://api.sandbox.gemini.com"
-
-	ConfigFile = "config.ini"
+	configFile = "config.ini"
 )
 
 type configBuilder struct {
 	Env       string
 	APIKey    string
 	APISecret string
+	Freq      int
+	Offset    int
+	LogFile   string
+	Pretty    bool
+	Repeat    bool
+	BaseURL   string
 }
 
-func NewConfigBuilder() *configBuilder {
+func Builder() *configBuilder {
 	return &configBuilder{}
 }
 
-func (c *configBuilder) SetConfig(env, apiKey, apiSecret string) {
+func (c *configBuilder) Set(env, apiKey, apiSecret string) {
 	c.Env = env
 	c.APIKey = apiKey
 	c.APISecret = apiSecret
 }
 
-func (c configBuilder) BuildConfig(conf *configBuilder) {
+func (c configBuilder) Build(conf *configBuilder) {
 
 	configTemplate := `
 #Possible values: sandbox and production
@@ -66,7 +71,7 @@ frequency = 0
 #logfile = "cgem.log"
 `
 
-	f, err := os.OpenFile(ConfigFile, os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(configFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -85,12 +90,63 @@ frequency = 0
 	fmt.Println("created config file:", fAbs)
 }
 
-func GetEnv(env string) string {
+func getEnv(env string) string {
 
 	switch env {
 	case "production":
-		return prodEnv
+		return "https://api.gemini.com"
+	case "sandbox":
+		return "https://api.sandbox.gemini.com"
 	default:
-		return sandboxEnv
+		return "enter a valid environment: sandbox or production"
+	}
+}
+
+func Get() *configBuilder {
+
+	var (
+		apiKey    string
+		apiSecret string
+		env       string
+		freq      int
+		offset    int
+		logFile   string
+		pretty    bool
+		repeat    bool
+	)
+
+	_, err := os.Stat(configFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			log.Fatalln(configFile, "missing: run 'cgem init' to get started")
+		}
+	}
+	cfg, err := ini.Load(configFile)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	apiKey = cfg.Section("credentials").Key("apikey").String()
+	apiSecret = cfg.Section("credentials").Key("apisecret").String()
+	env = cfg.Section("").Key("environment").String()
+	logFile = cfg.Section("logging").Key("logfile").String()
+	if logFile == "" {
+		logFile = "cgem.log"
+	}
+	pretty, _ = cfg.Section("").Key("pretty").Bool()
+	offset, _ = cfg.Section("orders").Key("offset").Int()
+	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
+	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
+
+	return &configBuilder{
+		Env:       env,
+		APIKey:    apiKey,
+		APISecret: apiSecret,
+		Freq:      freq,
+		Offset:    offset,
+		LogFile:   logFile,
+		Pretty:    pretty,
+		Repeat:    repeat,
+		BaseURL:   getEnv(env),
 	}
 }

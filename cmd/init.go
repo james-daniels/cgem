@@ -12,9 +12,9 @@ var initCmd = &cobra.Command{
 	Long:  "Init creates the default config file in the current binary location",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		config := conf.NewConfigBuilder()
-		config.SetConfig(env, apiKey, apiSecret)
-		config.BuildConfig(config)
+		config := conf.Builder()
+		config.Set(env, apiKey, apiSecret)
+		config.Build(config)
 	},
 }
 

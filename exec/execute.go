@@ -7,94 +7,95 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"gopkg.in/ini.v1"
 )
 
 func Execute(symbol, side string, amount, offset int) {
 
-	loadConfig()
+	c := conf.Get()
 
-	switch repeat {
+	switch c.Repeat {
 	case true:
-		if freq <= 0 {
-			logger(logFile).Fatalln("enter frequency value greater than 0")
+		if c.Freq <= 0 {
+			logger(c.LogFile).Fatalln("enter frequency value greater than 0")
 		} else {
-			multiInst(symbol, side, baseURL, amount, offset)
+			multiInst(symbol, side, amount, offset)
 		}
 	default:
-		oneInst(symbol, side, baseURL, amount, offset)
+		oneInst(symbol, side, amount, offset)
 	}
 }
 
-func oneInst(symbol, side, baseURL string, amount, offset int) {
+func oneInst(symbol, side string, amount, offset int) {
 
-	p, err := order.PriceFeed(symbol, baseURL)
-	errHandler(err)
+	c := conf.Get()
 
-	if iOffset != 0 {
-		offset = iOffset
+	p, err := order.PriceFeed(symbol, c.BaseURL)
+	errHandler(c.LogFile, err)
+
+	if c.Offset != 0 {
+		offset = c.Offset
 	}
 	price, err := order.PriceOffset(p.Price, offset)
-	errHandler(err)
+	errHandler(c.LogFile, err)
 
 	payload, err := order.PayloadBuilder(symbol, price, side, amount)
-	errHandler(err)
+	errHandler(c.LogFile, err)
 
-	signature := order.SigBuilder(payload, apiSecret)
+	signature := order.SigBuilder(payload, c.APISecret)
 
-	response, err := order.NewOrder(baseURL, payload, apiKey, signature)
-	errHandler(err)
+	response, err := order.NewOrder(c.BaseURL, payload, c.APIKey, signature)
+	errHandler(c.LogFile, err)
 
-	if pretty {
+	if c.Pretty {
 		order.MakePretty(response)
-		logger(logFile).Printf("%+v\n", response)
+		logger(c.LogFile).Printf("%+v\n", response)
 	} else {
 		fmt.Printf("%+v\n", response)
-		logger(logFile).Printf("%+v\n", response)
+		logger(c.LogFile).Printf("%+v\n", response)
 	}
 }
 
-func multiInst(symbol, side, baseURL string, amount, offset int) {
+func multiInst(symbol, side string, amount, offset int) {
 
-	logger(logFile).Println("app started")
+	c := conf.Get()
+
+	logger(c.LogFile).Println("app started")
 
 	for {
-		p, err := order.PriceFeed(symbol, baseURL)
-		errHandler(err)
+		p, err := order.PriceFeed(symbol, c.BaseURL)
+		errHandler(c.LogFile, err)
 
-		if iOffset != 0 {
-			offset = iOffset
+		if c.Offset != 0 {
+			offset = c.Offset
 		}
 		price, err := order.PriceOffset(p.Price, offset)
-		errHandler(err)
+		errHandler(c.LogFile, err)
 
 		payload, err := order.PayloadBuilder(symbol, price, side, amount)
-		errHandler(err)
+		errHandler(c.LogFile, err)
 
-		signature := order.SigBuilder(payload, apiSecret)
+		signature := order.SigBuilder(payload, c.APISecret)
 
-		response, err := order.NewOrder(baseURL, payload, apiKey, signature)
-		errHandler(err)
+		response, err := order.NewOrder(c.BaseURL, payload, c.APIKey, signature)
+		errHandler(c.LogFile, err)
 
-		logger(logFile).Printf("%+v\n", response)
+		logger(c.LogFile).Printf("%+v\n", response)
 
-		time.Sleep(time.Hour * time.Duration(freq))
+		time.Sleep(time.Hour * time.Duration(c.Freq))
 	}
 }
 
 func GetPrice(symbol string) {
+	c := conf.Get()
 
-	p, err := order.PriceFeed(symbol, conf.GetEnv(env))
-	errHandler(err)
+	p, err := order.PriceFeed(symbol, c.BaseURL)
+	errHandler(c.LogFile, err)
 
 	fmt.Printf("\n%v: %v\n", p.Pair, p.Price)
 }
 
 func logger(logfile string) *log.Logger {
-	if logfile == "" {
-		logfile = "cgem.log"
-	}
+
 	file, err := os.OpenFile(logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
@@ -103,31 +104,8 @@ func logger(logfile string) *log.Logger {
 	return log.New(file, "cgem: ", log.LstdFlags|log.Lshortfile)
 }
 
-func loadConfig() {
-
-	_, err := os.Stat(conf.ConfigFile)
+func errHandler(logfile string, err error) {
 	if err != nil {
-		if os.IsNotExist(err) {
-			logger(logFile).Fatalln(conf.ConfigFile, "missing: run 'cgem init' to get started")
-		}
-	}
-	cfg, err := ini.Load(conf.ConfigFile)
-	errHandler(err)
-
-	apiKey = cfg.Section("credentials").Key("apikey").String()
-	apiSecret = cfg.Section("credentials").Key("apisecret").String()
-	env = cfg.Section("").Key("environment").String()
-	logFile = cfg.Section("logging").Key("logfile").String()
-	pretty, _ = cfg.Section("").Key("pretty").Bool()
-	iOffset, _ = cfg.Section("orders").Key("offset").Int()
-	repeat, _ = cfg.Section("recurrence").Key("repeat").Bool()
-	freq, _ = cfg.Section("recurrence").Key("frequency").Int()
-
-	baseURL = conf.GetEnv(env)
-}
-
-func errHandler(err error) {
-	if err != nil {
-		logger(logFile).Fatalln(err)
+		logger(logfile).Fatalln(err)
 	}
 }
