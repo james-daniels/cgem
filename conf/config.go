@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	configFile = "config.ini"
+	file = "config.ini"
 )
 
 type config struct {
@@ -38,7 +38,7 @@ func (c *config) Set(env, apiKey, apiSecret string) {
 
 func Build(conf *config) {
 
-	configTemplate := `
+	templ := `
 #Possible values: sandbox and production
 environment = {{.Env}}
 
@@ -71,13 +71,13 @@ frequency = 0
 #logfile = "cgem.log"
 `
 
-	f, err := os.OpenFile(configFile, os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer f.Close()
 
-	t := template.Must(template.New("configTemplate").Parse(configTemplate))
+	t := template.Must(template.New("templ").Parse(templ))
 	err = t.Execute(f, conf)
 	if err != nil {
 		log.Println("an error has occured with config template")
@@ -92,10 +92,10 @@ frequency = 0
 
 func Get() *config {
 
-	_, err := os.Stat(configFile)
+	_, err := os.Stat(file)
 	if err != nil {
 		if os.IsNotExist(err) {
-			log.Fatalln(configFile, "missing: run 'cgem init' to get started")
+			log.Fatalln(file, "missing: run 'cgem init' to get started")
 		}
 	}
 
@@ -110,7 +110,7 @@ func Get() *config {
 		repeat    bool
 	)
 
-	cfg, err := ini.Load(configFile)
+	cfg, err := ini.Load(file)
 	if err != nil {
 		log.Fatalln(err)
 	}
