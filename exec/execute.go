@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Execute(symbol, side string, amount, offset int) {
+func Execute(symbol, side string, amount float64, offset int) {
 
 	c := conf.Get()
 
@@ -25,7 +25,7 @@ func Execute(symbol, side string, amount, offset int) {
 	}
 }
 
-func oneInst(symbol, side string, amount, offset int) {
+func oneInst(symbol, side string, amount float64, offset int) {
 
 	c := conf.Get()
 
@@ -55,7 +55,7 @@ func oneInst(symbol, side string, amount, offset int) {
 	}
 }
 
-func multiInst(symbol, side string, amount, offset int) {
+func multiInst(symbol, side string, amount float64, offset int) {
 
 	c := conf.Get()
 

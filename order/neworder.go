@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"text/template"
@@ -55,9 +56,11 @@ type newResponse struct {
 	OriginalAmount    string   `json:"original_amount"`
 }
 
-func PayloadBuilder(symbol, price, side string, amount int) (string, error) {
+func PayloadBuilder(symbol, price, side string, amount float64) (string, error) {
 
 	nonce := fmt.Sprint(time.Now().Unix() * 1000)
+
+	amount = math.Floor(amount * 100000)/100000
 
 	p := &newPayload{
 		Request: newOrderEndpoint,

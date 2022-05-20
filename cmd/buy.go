@@ -25,7 +25,7 @@ func init() {
 
 	buyCmd.Flags().StringVarP(&symbol, "symbol", "s", "", "symbol of the trading pair")
 	buyCmd.MarkFlagRequired("symbol")
-	buyCmd.Flags().IntVarP(&amount, "amount", "a", 0, "amount to buy")
+	buyCmd.Flags().Float64VarP(&amount, "amount", "a", 0, "amount to buy")
 	buyCmd.MarkFlagRequired("amount")
 	buyCmd.Flags().IntVarP(&offset, "offset", "o", 0, "positive value to add to price")
 }

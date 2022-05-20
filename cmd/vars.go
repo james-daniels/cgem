@@ -1,7 +1,7 @@
 package cmd
 
 var (
-	amount    int
+	amount    float64
 	offset    int
 	symbol    string
 	env       string
