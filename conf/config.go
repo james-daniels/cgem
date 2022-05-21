@@ -38,7 +38,7 @@ func (c *config) Set(env, apiKey, apiSecret string) {
 
 func Build(conf *config) {
 
-	templ := `
+	confTemplate := `
 #Possible values: sandbox and production
 environment = {{.Env}}
 
@@ -77,10 +77,10 @@ frequency = 0
 	}
 	defer f.Close()
 
-	t := template.Must(template.New("templ").Parse(templ))
+	t := template.Must(template.New("confTemplate").Parse(confTemplate))
 	err = t.Execute(f, conf)
 	if err != nil {
-		log.Println("an error has occured with config template")
+		log.Fatalln("an error has occured with config template")
 	}
 
 	fAbs, err := filepath.Abs(f.Name())
