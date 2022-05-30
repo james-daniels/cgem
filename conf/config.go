@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
+	"path"
 	"path/filepath"
 	"text/template"
 
@@ -11,7 +13,7 @@ import (
 )
 
 const (
-	file = "config.ini"
+	configFile = "config.ini"
 )
 
 type config struct {
@@ -71,6 +73,8 @@ frequency = 0
 #logfile = "cgem.log"
 `
 
+	file := GetPath(configFile)
+
 	f, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
@@ -91,6 +95,7 @@ frequency = 0
 }
 
 func Get() *config {
+	file := GetPath(configFile)
 
 	_, err := os.Stat(file)
 	if err != nil {
@@ -149,4 +154,19 @@ func getEnv(env string) string {
 	default:
 		return "enter a valid environment: sandbox or production"
 	}
+}
+
+func GetPath(file string) string {
+
+	f, err := exec.LookPath(os.Args[0])
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	p, err := filepath.EvalSymlinks(f)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return path.Join(path.Dir(p), file)
 }

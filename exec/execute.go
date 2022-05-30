@@ -96,12 +96,14 @@ func GetPrice(symbol string) {
 
 func logger(logfile string) *log.Logger {
 
-	file, err := os.OpenFile(logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file := conf.GetPath(logfile)
+
+	f, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	return log.New(file, "cgem: ", log.LstdFlags|log.Lshortfile)
+	return log.New(f, "cgem: ", log.LstdFlags|log.Lshortfile)
 }
 
 func errHandler(logfile string, err error) {
